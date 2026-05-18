@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة شرف | عباقرة علم النفس التعليمي</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- HTML2Canvas Library for Sticker Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            /* Theme Colors - Psychology (Indigo/Teal) meets Cyberpunk */
+            --neon-cyan: #14b8a6; /* Teal */
+            --electric-purple: #6366f1; /* Indigo */
+            --dark-navy: #0f172a;
+            --white: #FFFFFF;
+            
+            /* Backgrounds */
+            --bg-obsidian: #020617;
+            --glass-card: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(20, 184, 166, 0.2);
+            
+            /* Text */
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            
+            /* Gamification Tiers */
+            --tier-legendary: #8b5cf6; /* Violet */
+            --tier-active: #14b8a6; /* Teal */
+            --tier-charging: #f59e0b; /* Amber */
+
+            --font-ar: 'Tajawal', sans-serif;
+            --font-en: 'Orbitron', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ─── Base Styles ─── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-obsidian);
+            color: var(--text-main);
+            font-family: var(--font-ar);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(20, 184, 166, 0.08) 0%, transparent 50%),
+                linear-gradient(rgba(20, 184, 166, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 184, 166, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
+        }
+
+        /* ─── Header ─── */
+        header { padding: 50px 20px 20px; text-align: center; position: relative; }
+        
+        .uni-badge {
+            display: inline-block; background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3); color: #a5b4fc;
+            padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;
+            font-weight: 700; margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .main-title {
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: 1px;
+            background: linear-gradient(180deg, var(--white) 0%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(20, 184, 166, 0.4));
+            margin-bottom: 10px;
+        }
+
+        .subtitle { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 30px; }
+
+        .batch-core {
+            max-width: 650px; margin: 0 auto;
+            background: var(--glass-card); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 20px 30px;
+            backdrop-filter: blur(12px); display: flex; align-items: center; gap: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .core-meter {
+            width: 90px; height: 90px;
+            border: 3px solid rgba(255,255,255,0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; background: radial-gradient(circle, rgba(20, 184, 166, 0.1), transparent);
+        }
+        .core-meter::after {
+            content: ''; position: absolute; inset: -6px;
+            border: 2px dashed var(--neon-cyan); border-radius: 50%;
+            animation: rotate 8s linear infinite;
+        }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+
+        .core-value { 
+            font-family: var(--font-en); font-size: 1.6rem; color: var(--neon-cyan); 
+            font-weight: 900; text-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        /* ─── Grid ─── */
+        .energy-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px; padding: 20px; max-width: 1200px; margin: 20px auto 100px;
+        }
+
+        /* ─── Cards ─── */
+        .energy-cell {
+            background: var(--glass-card); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 30px; position: relative; overflow: hidden;
+            transition: var(--transition); backdrop-filter: blur(15px);
+            opacity: 0; transform: translateY(40px); display: flex; flex-direction: column;
+        }
+        .energy-cell.active { opacity: 1; transform: translateY(0); }
+        .energy-cell:hover { transform: translateY(-10px) scale(1.02); z-index: 10; }
+
+        /* Tiers */
+        .tier-legendary { --glow-color: var(--tier-legendary); border-color: rgba(139, 92, 246, 0.5); animation: glitch-border 3s infinite; }
+        .tier-legendary::before { content: '👑 مستوى العباقرة'; position: absolute; top: 0; right: 0; background: var(--glow-color); color: #fff; font-size: 0.7rem; font-weight: 900; padding: 5px 15px; border-bottom-left-radius: 10px; }
+        
+        .tier-active { --glow-color: var(--tier-active); }
+        .tier-active::before { content: '💪 مستوى المتميزين'; position: absolute; top: 0; right: 0; background: rgba(20, 184, 166, 0.2); color: var(--glow-color); font-size: 0.7rem; font-weight: 900; padding: 5px 15px; border-bottom-left-radius: 10px; }
+        
+        .tier-charging { --glow-color: var(--tier-charging); opacity: 0.9; }
+        .tier-charging::before { content: '🔋 في طريق الإبداع'; position: absolute; top: 0; right: 0; background: rgba(245, 158, 11, 0.1); color: var(--glow-color); font-size: 0.7rem; font-weight: 900; padding: 5px 15px; border-bottom-left-radius: 10px; }
+
+        .energy-cell:hover { box-shadow: 0 0 30px rgba(var(--glow-color), 0.3); }
+
+        @keyframes glitch-border {
+            0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.6), inset 0 0 15px rgba(139, 92, 246, 0.2); }
+        }
+
+        .cell-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; margin-top: 15px; }
+        .student-name { font-size: 1.3rem; font-weight: 900; color: #fff; line-height: 1.4; }
+        
+        .rating-badge {
+            font-size: 0.8rem; font-weight: 800; padding: 5px 12px; border-radius: 12px;
+            background: rgba(255,255,255,0.05); color: var(--glow-color);
+            border: 1px solid var(--glow-color); box-shadow: 0 0 10px rgba(var(--glow-color), 0.2);
+            white-space: nowrap;
+        }
+
+        .stats-row { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .stat-box { flex: 1; }
+        .stat-label { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px; font-weight: 700;}
+        .stat-value { font-family: var(--font-en); font-size: 1.6rem; font-weight: 900; color: #fff; }
+        .stat-value.highlight { color: var(--glow-color); text-shadow: 0 0 10px rgba(var(--glow-color), 0.5); }
+
+        .energy-track { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin-bottom: 25px; }
+        .energy-fill { height: 100%; background: var(--glow-color); box-shadow: 0 0 15px var(--glow-color); transition: width 1.5s ease; width: 0; position: relative; }
+        
+        .btn-generate {
+            width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--glow-color); color: var(--white);
+            padding: 12px; border-radius: 10px; font-family: var(--font-ar); font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-generate:hover { background: var(--glow-color); color: var(--bg-obsidian); box-shadow: 0 0 20px var(--glow-color); }
+
+        /* ─── Modal ─── */
+        .modal {
+            position: fixed; inset: 0; z-index: 2000; background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal.show { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-content {
+            background: var(--dark-navy); width: 100%; max-width: 450px;
+            border: 1px solid var(--neon-cyan); border-radius: 24px; padding: 40px 30px;
+            text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .close-modal {
+            position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: #fff; 
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer; transition: 0.3s;
+        }
+        .close-modal:hover { background: var(--neon-cyan); color: #000; }
+
+        .btn-whatsapp {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background: #25D366; color: #fff; text-decoration: none; padding: 15px 30px;
+            border-radius: 12px; font-weight: 800; font-size: 1.1rem; margin-top: 20px; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3); border: none; cursor: pointer; width: 100%;
+        }
+        .btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(37, 211, 102, 0.4); }
+
+        /* ─── Hidden Sticker Template ─── */
+        #sticker-render-area {
+            position: fixed; top: -9999px; left: -9999px;
+            width: 1080px; height: 1080px; background-color: var(--bg-obsidian);
+            background-image: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #fff; font-family: 'Tajawal', sans-serif;
+        }
+        
+        .sticker-frame {
+            width: 85%; height: 85%; border: 4px solid var(--neon-cyan); border-radius: 40px;
+            position: relative; padding: 80px 50px; display: flex; flex-direction: column; justify-content: space-between;
+            background: rgba(15, 23, 42, 0.85); box-shadow: inset 0 0 100px rgba(20, 184, 166, 0.2);
+            text-align: center;
+        }
+
+        .sticker-frame::before {
+            content: 'PSYCHOLOGY EXPERTS'; position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            background: var(--dark-navy); color: var(--neon-cyan); padding: 0 30px; font-family: 'Orbitron', sans-serif; 
+            font-size: 1.5rem; font-weight: 900; border: 2px solid var(--neon-cyan); border-radius: 20px;
+        }
+
+        .s-header .s-uni { color: var(--electric-purple); font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
+        .s-header .s-title { color: var(--text-main); font-size: 1.8rem; font-weight: 700; margin-bottom: 30px; }
+        
+        .s-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        .s-name { font-size: 4rem; font-weight: 900; color: #fff; margin-bottom: 25px; text-shadow: 0 0 20px rgba(255,255,255,0.3); line-height: 1.3;}
+        .s-rating { 
+            display: inline-block; background: var(--electric-purple); color: #fff;
+            padding: 12px 35px; border-radius: 25px; font-size: 2.2rem; font-weight: 900; margin-bottom: 40px;
+        }
+        
+        /* ─── Motivation Quote ─── */
+        .s-motivation {
+            font-size: 2.4rem; font-weight: 900; color: #fbbf24; margin-bottom: 50px;
+            background: rgba(251, 191, 36, 0.1); padding: 15px 30px; border-radius: 20px;
+            border: 2px dashed rgba(251, 191, 36, 0.5);
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .s-score-box { display: flex; justify-content: center; gap: 80px; }
+        .s-score-item { text-align: center; }
+        .s-score-label { color: var(--text-dim); font-size: 1.8rem; margin-bottom: 10px; font-weight: 700; }
+        .s-score-val { font-family: 'Orbitron', sans-serif; font-size: 5.5rem; font-weight: 900; color: var(--neon-cyan); }
+
+        .s-footer { border-top: 2px dashed rgba(255,255,255,0.2); padding-top: 30px; }
+        .s-footer-text { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--text-dim); letter-spacing: 5px; }
+
+        /* ─── Loading ─── */
+        #loading-screen {
+            position: fixed; inset: 0; background: var(--bg-obsidian);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 3000; transition: opacity 0.5s;
+        }
+        .loader-ring { width: 80px; height: 80px; border: 4px solid rgba(99, 102, 241, 0.2); border-top: 4px solid var(--electric-purple); border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        @media (max-width: 768px) { .batch-core { flex-direction: column; text-align: center; } .energy-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="loading-screen">
+        <div class="loader-ring"></div>
+        <p style="margin-top: 25px; color: var(--electric-purple); font-weight: 700; font-size: 1.2rem;">جاري سحب بيانات العباقرة...</p>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="uni-badge">مسابقة التميز المعرفي</div>
+        <h1 class="main-title">لوحة شرف | عباقرة علم النفس التعليمي</h1>
+        <p class="subtitle">تتبع مباشر للنتائج وإصدار البطاقات التحفيزية</p>
+        
+        <div class="batch-core">
+            <div class="core-meter"><div class="core-value" id="batch-avg">%0</div></div>
+            <div style="text-align: right; flex: 1;">
+                <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 5px;">مؤشر الإنجاز العام</h3>
+                <p style="font-size: 0.95rem; color: var(--text-dim);">متوسط نجاح وتفوق جميع الطلاب المشاركين في التحدي.</p>
+            </div>
+            <div style="text-align: center; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 25px;">
+                <div style="font-family: var(--font-en); font-size: 1.5rem; color: #fff; font-weight: 700;" id="active-sources">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-dim);">طالب مُشارك</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Grid -->
+    <main class="energy-grid" id="main-grid"></main>
+
+    <!-- Modal -->
+    <div class="modal" id="action-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div id="modal-status-icon" style="font-size: 4rem; margin-bottom: 10px;">🏆</div>
+            <h2 style="color: #fff; margin-bottom: 15px;">البطاقة جاهزة يا بطل!</h2>
+            <p id="modal-status-desc" style="color: var(--text-dim); margin-bottom: 25px; line-height: 1.6;">
+                تم توليد بطاقة شرف باسمك مصممة خصيصاً لك. يمكنك الآن التباهي بها.
+            </p>
+            <div id="modal-actions-area" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- Hidden Sticker Template -->
+    <div id="sticker-render-area">
+        <div class="sticker-frame">
+            <div class="s-header">
+                <div class="s-uni">لوحة الشرف الرقمية</div>
+                <div class="s-title">مسابقة عباقرة علم النفس التعليمي</div>
+            </div>
+            <div class="s-body">
+                <div class="s-name" id="s-name">Student Name</div>
+                <div class="s-rating" id="s-rating">التقييم</div>
+                
+                <!-- 🌟 Egyptian Motivational Sentence 🌟 -->
+                <div class="s-motivation" id="s-motivation">عاش يا بطل، فخر الدفعة كلها! 👑</div>
+
+                <div class="s-score-box">
+                    <div class="s-score-item">
+                        <div class="s-score-label">معدل الإنجاز</div>
+                        <div class="s-score-val" id="s-percent">0%</div>
+                    </div>
+                    <div class="s-score-item">
+                        <div class="s-score-label">النقاط</div>
+                        <div class="s-score-val" id="s-score">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="s-footer">
+                <div class="s-footer-text">GENERATED BY EXAM ENGINE V2.0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Google Sheet Integration
+        const SHEET_ID = '1lEv1k6Y-2C99JHgP5YS1VNW-eXSfOau9ZFoN8564HaU';
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+        // Egyptian Motivational Quotes by Tier
+        const quotes = {
+            legendary: [
+                "عاش يا بطل، فخر القسم كله! 👑",
+                "دماغ شغالة مش بتنام، الله ينور! 🔥",
+                "برنس وعملت العظمة كلها! 🚀",
+                "يا سيدي على الحلاوة، العباقرة بتبان! 🌟"
+            ],
+            active: [
+                "شغل عالي يا فنان، كمل في سكتك! 💪",
+                "وحش وعملت اللي عليك، عاش! 👏",
+                "خطوة كمان وتبقى في القمة، استمر! 🎯",
+                "مجهود يُحترم يا بطل، الجاي أحسن! 💡"
+            ],
+            charging: [
+                "بطل وتقدر تعوضها وتبقى أحسن! 🔋",
+                "المرة الجاية هتكسر الدنيا، متيأسش! 💥",
+                "عاش على المجهود، بنتعلم عشان نبقى أحسن! 🛠️",
+                "ولا يهمك، العباقرة بيقعوا عشان يقفوا أقوى! 🛡️"
+            ]
+        };
+
+        function getRandomQuote(tier) {
+            const arr = quotes[tier];
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        async function fetchEnergyData() {
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error("Network response was not ok");
+                const data = await response.text();
+                processData(data);
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                document.getElementById('loading-screen').innerHTML = '<p style="color:#ef4444; font-size:1.2rem;">فشل الاتصال بقاعدة البيانات. تأكد من صلاحيات الملف.</p>';
+            }
+        }
+
+        function processData(csv) {
+            // Split by line and handle basic CSV format (Assuming Columns: Timestamp, Name, Score, Percentage, Rating, Time)
+            const lines = csv.split('\n');
+            const students = [];
+            let totalPercentage = 0;
+
+            for(let i = 1; i < lines.length; i++) {
+                if(!lines[i].trim()) continue;
+                
+                // Simple CSV split (works if no commas inside the data fields)
+                const cols = lines[i].split(','); 
+                
+                if(cols.length < 5) continue;
+
+                // Extract and clean name from ID "أحمد محمد (ID: STU-123456)" -> "أحمد محمد"
+                let rawName = cols[1]?.trim() || "غير معروف";
+                let cleanName = rawName.split('(ID:')[0].trim();
+
+                const scoreStr = cols[2]?.trim() || "0";
+                const percentStr = cols[3]?.trim() || "0%";
+                const rating = cols[4]?.trim() || "تمت المشاركة";
+
+                if(cleanName && scoreStr) {
+                    const scoreNum = parseFloat(scoreStr) || 0;
+                    const percentNum = parseFloat(percentStr.replace('%', '')) || 0;
+                    
+                    // Assign Tier
+                    let tier = 'charging';
+                    if (percentNum >= 90) tier = 'legendary';
+                    else if (percentNum >= 75) tier = 'active';
+
+                    students.push({ name: cleanName, scoreStr, percentNum, percentStr, rating, scoreNum, tier });
+                    totalPercentage += percentNum;
+                }
+            }
+
+            // Sort by percentage/score descending
+            students.sort((a, b) => b.percentNum - a.percentNum);
+            
+            const avg = students.length ? Math.round(totalPercentage / students.length) : 0;
+            document.getElementById('batch-avg').textContent = avg + '%';
+            document.getElementById('active-sources').textContent = students.length;
+
+            renderGrid(students);
+        }
+
+        function renderGrid(students) {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = '';
+
+            students.forEach((s, idx) => {
+                const cell = document.createElement('div');
+                cell.className = `energy-cell tier-${s.tier}`;
+                
+                cell.innerHTML = `
+                    <div class="cell-header">
+                        <div class="student-name">${s.name}</div>
+                        <div class="rating-badge">${s.rating}</div>
+                    </div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-label">النقاط</div>
+                            <div class="stat-value highlight">${s.scoreStr}</div>
+                        </div>
+                        <div class="stat-box" style="text-align: left;">
+                            <div class="stat-label">معدل الإنجاز</div>
+                            <div class="stat-value">${s.percentStr}</div>
+                        </div>
+                    </div>
+
+                    <div class="energy-track">
+                        <div class="energy-fill" style="width: 0%" id="fill-${idx}"></div>
+                    </div>
+
+                    <button class="btn-generate" onclick="generateSticker('${s.name}', '${s.scoreStr}', '${s.percentStr}', '${s.rating}', '${s.tier}')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        استخراج ومشاركة البطاقة
+                    </button>
+                `;
+
+                grid.appendChild(cell);
+
+                // Animations
+                setTimeout(() => {
+                    cell.classList.add('active');
+                    document.getElementById(`fill-${idx}`).style.width = s.percentNum + '%';
+                }, idx * 100);
+            });
+
+            // Hide Loader
+            setTimeout(() => {
+                const ls = document.getElementById('loading-screen');
+                ls.style.opacity = '0';
+                setTimeout(() => ls.style.display = 'none', 500);
+            }, 500);
+        }
+
+        async function generateSticker(name, score, percent, rating, tier) {
+            // Fill Data
+            document.getElementById('s-name').textContent = name;
+            document.getElementById('s-score').textContent = score;
+            document.getElementById('s-percent').textContent = percent;
+            document.getElementById('s-rating').textContent = rating;
+            document.getElementById('s-motivation').textContent = getRandomQuote(tier);
+
+            // Adjust Theme by Tier
+            const frame = document.querySelector('.sticker-frame');
+            const ratingBadge = document.getElementById('s-rating');
+            
+            if(tier === 'legendary') {
+                frame.style.borderColor = 'var(--tier-legendary)';
+                frame.style.boxShadow = 'inset 0 0 100px rgba(139, 92, 246, 0.3)';
+                ratingBadge.style.background = 'var(--tier-legendary)';
+                ratingBadge.style.color = '#fff';
+            } else if(tier === 'charging') {
+                frame.style.borderColor = 'var(--tier-charging)';
+                frame.style.boxShadow = 'inset 0 0 100px rgba(245, 158, 11, 0.2)';
+                ratingBadge.style.background = 'var(--tier-charging)';
+                ratingBadge.style.color = '#fff';
+            } else {
+                frame.style.borderColor = 'var(--tier-active)';
+                frame.style.boxShadow = 'inset 0 0 100px rgba(20, 184, 166, 0.2)';
+                ratingBadge.style.background = 'var(--tier-active)';
+                ratingBadge.style.color = '#fff';
+            }
+
+            const renderArea = document.getElementById('sticker-render-area');
+            
+            try {
+                const canvas = await html2canvas(renderArea, {
+                    scale: 1.5,
+                    backgroundColor: '#020617',
+                    logging: false
+                });
+
+                const fileName = `Psychology-Hero-${name.replace(/\s+/g, '-')}.jpg`;
+                
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                    const actionsArea = document.getElementById('modal-actions-area');
+                    actionsArea.innerHTML = '';
+
+                    // Check Mobile Share Support
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        const shareBtn = document.createElement('button');
+                        shareBtn.className = 'btn-whatsapp';
+                        shareBtn.innerHTML = 'إرسال الصورة للواتساب 📲';
+                        shareBtn.onclick = async () => {
+                            try {
+                                await navigator.share({
+                                    files: [file],
+                                    title: 'بطاقة التميز',
+                                    text: 'شوف نتيجتي في مسابقة عباقرة علم النفس التعليمي! 🧠🚀'
+                                });
+                            } catch (err) { console.error(err); }
+                        };
+                        actionsArea.appendChild(shareBtn);
+                        document.getElementById('modal-status-desc').textContent = "رائع! يمكنك الآن إرسال الصورة مباشرة إلى أصدقائك.";
+                    } else {
+                        // Desktop Fallback
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.className = 'btn-whatsapp';
+                        downloadBtn.style.background = 'var(--tier-active)';
+                        downloadBtn.innerHTML = 'تحميل الصورة كملف 💾';
+                        downloadBtn.onclick = () => {
+                            const link = document.createElement("a");
+                            link.download = fileName;
+                            link.href = canvas.toDataURL("image/jpeg", 0.9);
+                            link.click();
+                        };
+                        actionsArea.appendChild(downloadBtn);
+
+                        const waLink = document.createElement('a');
+                        waLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent('شوف نتيجتي في مسابقة عباقرة علم النفس التعليمي! 🧠🚀')}`;
+                        waLink.target = "_blank";
+                        waLink.className = 'btn-whatsapp';
+                        waLink.style.background = '#25D366';
+                        waLink.innerHTML = 'فتح واتساب للمشاركة 💬';
+                        actionsArea.appendChild(waLink);
+
+                        document.getElementById('modal-status-desc').textContent = "حمل الصورة أولاً، ثم شاركها لتبهر الجميع بمستواك.";
+                    }
+
+                    document.getElementById('action-modal').classList.add('show');
+                }, 'image/jpeg', 0.9);
+
+            } catch(e) {
+                console.error("Error: ", e);
+                alert("حدث خطأ أثناء توليد البطاقة.");
+            }
+        }
+
+        function closeModal() { document.getElementById('action-modal').classList.remove('show'); }
+        window.onclick = function(e) { if (e.target == document.getElementById('action-modal')) closeModal(); }
+        window.onload = fetchEnergyData;
+    </script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مسابقة عباقرة علم النفس التعليمي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+
+<style>
+/* ─── CSS Variables (Psychology Theme - Purple/Teal) ─── */
+:root {
+  --primary:      #6366f1; /* Indigo */
+  --primary-dark: #4338ca;
+  --primary-light:#a5b4fc;
+  --secondary:    #14b8a6; /* Teal */
+  --sky-pale:     #eef2ff;
+  --sky-glass:    rgba(99, 102, 241, 0.12);
+  --white:        #FFFFFF;
+  --off-white:    #f8fafc;
+  --text-dark:    #0f172a;
+  --text-mid:     #334155;
+  --text-soft:    #64748b;
+  --card-bg:      rgba(255,255,255,0.85);
+  --card-border:  rgba(99, 102, 241, 0.22);
+  --shadow-sky:   0 8px 40px rgba(99, 102, 241, 0.12);
+  --shadow-deep:  0 20px 60px rgba(67, 56, 202, 0.15);
+  --radius-lg:    20px;
+  --radius-md:    14px;
+  --radius-sm:    8px;
+  --font-main:    'Cairo', 'Tajawal', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --transition:   0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-main);
+  background: var(--off-white);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Animated Background ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 80%, rgba(20, 184, 166, 0.08) 0%, transparent 60%),
+    linear-gradient(160deg, #f8fafc 0%, #e0e7ff 100%);
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  background-image:
+    radial-gradient(circle 1px at 20% 30%, rgba(99, 102, 241, 0.2) 1px, transparent 0),
+    radial-gradient(circle 1px at 60% 70%, rgba(20, 184, 166, 0.15) 1px, transparent 0);
+  background-size: 80px 80px, 100px 100px;
+  animation: drift 30s linear infinite;
+}
+@keyframes drift { to { background-position: 80px 80px, 100px 100px; } }
+
+/* ─── Progress Bar ─── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 4px;
+  background: rgba(99, 102, 241, 0.15); z-index: 1000;
+}
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--secondary));
+  width: 0%; transition: width 0.4s ease;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+}
+
+/* ─── Navigation ─── */
+nav {
+  position: fixed; top: 4px; left: 0; right: 0; z-index: 999;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+  box-shadow: 0 2px 20px rgba(67, 56, 202, 0.08);
+}
+.nav-brand {
+  font-size: 0.9rem; font-weight: 700; color: var(--primary-dark);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-brand .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+.student-badge {
+  background: var(--sky-glass);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--primary-dark);
+  display: flex; align-items: center; gap: 6px;
+}
+.timer-text { font-family: var(--font-mono); color: var(--secondary); font-weight: 800; }
+
+/* ─── Main Container ─── */
+#slides-wrapper { padding-top: 80px; min-height: 100vh; display: flex; justify-content: center; }
+
+/* ─── Slide ─── */
+.slide {
+  display: none; width: 100%; max-width: 800px;
+  padding: 24px;
+  animation: slideIn 0.4s cubic-bezier(0.4,0,0.2,1) both;
+}
+.slide.active { display: block; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Intro / Form Card ─── */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-sky);
+  text-align: center;
+}
+.title-main {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 900; color: var(--text-dark);
+  margin-bottom: 10px; line-height: 1.3;
+}
+.title-main span {
+  background: linear-gradient(90deg, var(--primary-dark), var(--secondary));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.subtitle { color: var(--text-soft); font-size: 1.05rem; margin-bottom: 30px; }
+
+.input-group { margin-bottom: 24px; text-align: right; }
+.input-label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--primary-dark); }
+.custom-input {
+  width: 100%; padding: 14px 18px;
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-md);
+  font-family: var(--font-main); font-size: 1rem;
+  background: rgba(255,255,255,0.9);
+  transition: var(--transition);
+}
+.custom-input:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+.error-msg { color: #e11d48; font-size: 0.85rem; font-weight: 600; margin-top: 8px; display: none; }
+
+/* ─── Question Card ─── */
+.q-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 2px dashed rgba(99, 102, 241, 0.2);
+}
+.q-counter {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  color: white; padding: 6px 16px; border-radius: 20px;
+  font-weight: 700; font-size: 0.9rem;
+}
+.q-type { font-weight: 800; color: var(--secondary); font-size: 0.9rem; }
+.q-text { font-size: 1.25rem; font-weight: 700; color: var(--text-dark); line-height: 1.6; margin-bottom: 24px; text-align: right; }
+
+.options-grid { display: flex; flex-direction: column; gap: 12px; }
+.option-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; border-radius: var(--radius-md);
+  border: 2px solid rgba(99, 102, 241, 0.15);
+  background: var(--white);
+  cursor: pointer; transition: var(--transition);
+  font-family: var(--font-main); font-size: 1.05rem;
+  color: var(--text-mid); font-weight: 600; text-align: right; width: 100%;
+}
+.option-btn:hover { border-color: var(--primary); background: var(--sky-pale); transform: translateX(-4px); }
+.option-btn.selected {
+  border-color: var(--primary-dark);
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.1), rgba(20, 184, 166, 0.05));
+  color: var(--primary-dark); font-weight: 800;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+.option-radio {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid currentColor; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.option-radio::after {
+  content: ''; width: 10px; height: 10px; border-radius: 50%;
+  background: currentColor; display: none;
+}
+.option-btn.selected .option-radio::after { display: block; }
+
+/* ─── Buttons ─── */
+.nav-buttons {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 32px; gap: 16px;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px; border-radius: var(--radius-md);
+  font-family: var(--font-main); font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: var(--transition); border: none; outline: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(99, 102, 241, 0.4); }
+.btn-secondary { background: var(--white); color: var(--primary-dark); border: 2px solid var(--card-border); box-shadow: var(--shadow-sky); }
+.btn-secondary:hover:not(:disabled) { background: var(--sky-pale); border-color: var(--primary); }
+.btn-submit { background: linear-gradient(135deg, #0f766e, var(--secondary)); color: white; box-shadow: 0 6px 20px rgba(20, 184, 166, 0.3); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Score Slide ─── */
+.score-ring {
+  width: 160px; height: 160px; border-radius: 50%;
+  border: 8px solid rgba(99, 102, 241, 0.1);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; position: relative;
+}
+.score-ring svg { position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); }
+.score-ring circle { fill: none; stroke-width: 8; transition: stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1); }
+.score-ring .bg-circle { stroke: rgba(99, 102, 241, 0.1); }
+.score-ring .fg-circle { stroke: var(--secondary); stroke-linecap: round; transform-origin: center; transform: rotate(-90deg); }
+.score-number { font-size: 3rem; font-weight: 900; color: var(--primary-dark); font-family: var(--font-mono); }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px;
+}
+.stat-box {
+  background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.15);
+  padding: 16px; border-radius: var(--radius-md);
+}
+.stat-label { font-size: 0.85rem; color: var(--text-soft); font-weight: 700; margin-bottom: 4px; }
+.stat-val { font-size: 1.2rem; font-weight: 900; color: var(--primary-dark); font-family: var(--font-mono); }
+
+/* ─── Syncing Overlay ─── */
+#sync-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px);
+  align-items: center; justify-content: center; flex-direction: column; gap: 24px;
+}
+#sync-overlay.show { display: flex; animation: fadeIn 0.3s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.sync-spinner {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 4px solid rgba(99, 102, 241, 0.15); border-top-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.sync-text { font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); }
+
+/* ─── Responsive ─── */
+@media (max-width: 600px) {
+  nav { padding: 12px 16px; }
+  .glass-card { padding: 24px 20px; }
+  .nav-buttons { flex-direction: column-reverse; }
+  .btn { width: 100%; }
+}
+a{
+  color: inherit; text-decoration: none;
+
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<nav>
+  <div class="nav-brand"><div class="dot"></div>عباقرة علم النفس</div>
+  <div class="student-badge">
+    ⏱️ <span class="timer-text" id="top-timer">00:00</span>
+  </div>
+</nav>
+
+<div id="slides-wrapper">
+
+  <!-- ══ SLIDE 1: INTRO & REGISTRATION ══ -->
+  <div class="slide active" id="slide-intro">
+    <div class="glass-card">
+      <h1 class="title-main">مسابقة <span>عباقرة علم النفس</span> التعليمي 🧠</h1>
+      <p class="subtitle">بسم الله أجيب وبه أستعين وعليه أتوكل</p>
+      <a href="res.html"> <button class="btn btn-primary" style="width: 100%;">عرض النتائج</button></a>
+      <div id="registration-area">
+        <div class="input-group">
+          <label class="input-label">الاسم الثلاثي للطالب:</label>
+          <input type="text" id="student-name" class="custom-input" placeholder="اكتب اسمك هنا..." autocomplete="off">
+          <div id="name-error" class="error-msg">⚠️ يرجى إدخال اسمك للبدء</div>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;" onclick="startExam()">بدء الامتحان والانطلاق 🚀</button>
+ 
+ 
+      </div>
+
+      <div id="already-taken-area" style="display: none;">
+       
+        <div style="font-size: 4rem; margin-bottom: 10px;">🛑</div>
+        <h3 style="color: #e11d48; margin-bottom: 10px;">عذراً، لقد قمت بأداء الامتحان مسبقاً!</h3>
+        <p style="color: var(--text-soft);">نظام التتبع يمنع مشاركة الطالب أكثر من مرة لضمان النزاهة.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 2: THE QUIZ ENGINE ══ -->
+  <div class="slide" id="slide-quiz">
+    <div class="glass-card" style="text-align: right;">
+      <div class="q-header">
+        <div class="q-counter" id="q-counter">سؤال 1 من 40</div>
+        <div class="q-type" id="q-type">تفكير ناقد (صواب / خطأ)</div>
+      </div>
+      
+      <div class="q-text" id="q-text">جاري تحميل السؤال...</div>
+      
+      <div class="options-grid" id="options-container">
+        <!-- Options injected via JS -->
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">السابق</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">التالي</button>
+        <button class="btn btn-submit" id="btn-finish" onclick="finishExam()" style="display:none;">إنهاء وتسليم الإجابات 🏁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 3: RESULTS ══ -->
+  <div class="slide" id="slide-result">
+    <div class="glass-card">
+      <div style="font-size: 3rem; margin-bottom: 10px;" id="result-emoji">🎉</div>
+      <h2 class="title-main" style="font-size: 1.8rem; margin-bottom: 5px;">تم التسليم بنجاح!</h2>
+      <p style="color: var(--text-soft); margin-bottom: 24px;" id="result-message">شكراً لمشاركتك يا <span id="res-name" style="font-weight:bold; color:var(--primary-dark);"></span></p>
+      
+      <div class="score-ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg-circle" cx="50" cy="50" r="44"/>
+          <circle class="fg-circle" id="score-circle" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"/>
+        </svg>
+        <div class="score-number" id="res-percent">0%</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">النقاط</div>
+          <div class="stat-val" id="res-score">0 / 40</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">التقييم</div>
+          <div class="stat-val" id="res-rating" style="color: var(--secondary);">جيد</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">الزمن المستغرق</div>
+          <div class="stat-val" id="res-time">00:00</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">معرف الجهاز (ID)</div>
+          <div class="stat-val" id="res-id" style="font-size:0.9rem;">ID-12345</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Syncing Overlay -->
+<div id="sync-overlay">
+  <div class="sync-spinner"></div>
+  <div class="sync-text">جاري تصحيح الإجابات...</div>
+  <div style="color: var(--text-soft); font-weight: 600;">يتم الآن إرسال بياناتك لمركز القياس</div>
+</div>
+
+<!-- Hidden iframe & Form to submit without redirecting -->
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(window.submitted){onFormSubmitted();}"></iframe>
+<form 
+  id="google-form"
+  action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdU7ubD2V_IDlHAON0NYhveuc6xM2LqDY0UkRbGmRaZT8yKgA/formResponse" 
+  method="POST" 
+  target="hidden_iframe" 
+  style="display:none;"
+>
+  <!-- Name -->
+  <input type="hidden" name="entry.403304456" id="f-name">
+  <!-- Score -->
+  <input type="hidden" name="entry.1893019857" id="f-score">
+  <!-- Percentage -->
+  <input type="hidden" name="entry.1596802858" id="f-percent">
+  <!-- Rating -->
+  <input type="hidden" name="entry.453835527" id="f-rating">
+  <!-- Time -->
+  <input type="hidden" name="entry.1606134639" id="f-time">
+</form>
+
+<script>
+/* ─── Questions Database (40 Questions) ─── */
+const questions = [
+  // ── True / False (20 Questions) ──
+  { t: 'tf', q: 'ينعكس الاستقرار النفسي للمدرس الهادئ على تلاميذه فقط في الجانب التحصيلي الأكاديمي دون التأثير على الجانب الانفعالي والخلقي.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'التقويم المدرسي الشامل والفعال هو الذي يعتمد كلياً على الاختبارات التحريرية المقننة في نهاية العام الدراسي لمعرفة مستوى التلميذ.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'التنسيق الطولي للمناهج يهدف إلى منع التكرار والازدواجية بين مادتي التاريخ والجغرافيا في نفس الصف الدراسي.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'تظهر "الهضبة" في منحنى التعلم كدليل قطعي لا يقبل الشك على وصول المتعلم لحده الفسيولوجي المطلق وتوقف التعلم نهائياً.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'تظهر منحنيات السرعة السلبية (البداية السريعة) دائماً عندما يواجه المتعلم مادة شديدة الصعوبة أو عندما تنعدم لديه الخبرة السابقة.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'يعتمد قياس الاحتفاظ بطريقة "الاستدعاء" على تقديم خيارات جاهزة للمتعلم مما يجعلها أسهل بكثير من طريقة "التعرف".', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'في بداية تكوين المهارات الحركية المعقدة، يجب التركيز على عامل السرعة أولاً ثم إتقان الدقة والتفاصيل لاحقاً.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'يتعلم كل فرد من مدرسة الحياة بطريقة مقصودة وغير مقصودة من المهد إلى اللحد وتشاركه فيها كافة المؤسسات الاجتماعية.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'الكتاب المدرسي الجيد وفق التربية الحديثة هو الذي يقدم المعلومات الجاهزة ويخلو من الأنشطة والتدريبات ليركز انتباه التلميذ على الحفظ.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'يختلف "الحد العملي" (الحد الأقصى للكفاية في الأداء) باختلاف الأغراض العملية وقوة الدوافع، بينما يعتمد الحد الفسيولوجي على القدرات العضوية.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'الذبذبات القصيرة المتقطعة في منحنى التعلم تعكس عادة تغيرات عرضية كالتعب أو تشتت الانتباه وليس انعداماً كلياً للتعلم.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'التهيؤ النفسي للتعلم يعني أن يستبعد المتعلم كافة مشاغله الذهنية الأخرى ويركز طاقته وانتباهه في موضوع التعلم فقط.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'يؤكد علم النفس التربوي أن نجاح الحياة الأسرية وسعادتها يعتمد حصرياً على التوافق المادي والاقتصادي وتجاهل الجوانب الانفعالية والمزاجية.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'تتكون العادات عند الإنسان نتيجة التكرار المستمر، وتُؤدى بطريقة آلية وميكانيكية دون الحاجة إلى تركيز الانتباه أو التفكير العميق.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'يعتمد التعلم بالاستبصار (في نظرية الجشطلت) على الإدراك المفاجئ للعلاقات في الموقف الكلي بدلاً من المحاولات العشوائية العمياء.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'اقتصر دور المدرسة في العصر الحديث على إيصال الجانب المعرفي للمواد الدراسية فقط نظراً لتعدد وسائل الإعلام والترفيه.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'يعتبر "تعلم حل المشكلات" من أهم نواتج عملية التعلم التي تتطلب التحليل وفهم الموقف كلياً قبل البدء في محاولات الحل.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'تظهر منحنيات السرعة الإيجابية (البداية البطيئة) عادة عندما يمتلك المتعلم خبرة سابقة قوية وحماساً شديداً للمادة.', opts: ['صواب', 'خطأ'], ans: 1 },
+  { t: 'tf', q: 'يؤكد علم النفس التربوي أن الحياة الأسرية تتطلب التنازل المتبادل وتفهم الخصائص المزاجية والنفسية للطرفين لضمان نجاحها.', opts: ['صواب', 'خطأ'], ans: 0 },
+  { t: 'tf', q: 'عند تصميم المناهج الدراسية، يجب التركيز على الأهداف المعرفية فقط وتأجيل الأهداف الوجدانية والمهارية للمراحل الجامعية.', opts: ['صواب', 'خطأ'], ans: 1 },
+
+  // ── MCQ (20 Questions) ──
+  { t: 'mcq', q: 'من أبرز خصائص الإدارة المدرسية الناجحة التي تحقق التوافق النفسي للمعلمين ........', opts: ['القيادة الديكتاتورية والحزم الشديد', 'القيادة الفوضوية التي تمنح حرية مطلقة', 'القيادة الديمقراطية وتوزيع العمل بحسب الميول والقدرات', 'لا شيء مما سبق'], ans: 2 },
+  { t: 'mcq', q: 'لكي يضمن المدرس الحفاظ على صحته النفسية وتجنب التوتر والانفعال، ينصحه علم النفس بـ ........', opts: ['مزاولة الهوايات والأنشطة الترويحية', 'الاطمئنان الدوري على صحته الجسمية', 'التقبل والرضا المهني والانتماء للنقابات', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'عند وضع وتصميم المناهج الدراسية الحديثة، تؤكد المبادئ النفسية على ضرورة ........', opts: ['مراعاة مستوى النضج العقلي والزمني للتلاميذ', 'تحقيق التوازن بين الجوانب المعرفية والوجدانية والمهارية', 'مواكبة التطورات العلمية ومرونة التعديل', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'الطالب الذي يبدأ دراسة مادة جديدة، ولكنه يمتلك خبرة سابقة قوية مرتبطة بها، يكون منحنى التعلم لديه غالباً ........', opts: ['ذو سرعة إيجابية (يبدأ ببطء ثم يتسارع)', 'ذو سرعة سلبية (يبدأ بسرعة ثم يتباطأ تدريجياً)', 'خطاً مستقيماً متوازياً تماماً', 'متذبذباً باستمرار دون أي تقدم'], ans: 1 },
+  { t: 'mcq', q: 'من العوامل الموضوعية (الخاصة بظروف التعلم) التي تؤدي لظهور (الهضبة) في منحنى التعلم ........', opts: ['التركيز المبالغ فيه على جزء وإهمال الكل', 'الانتقال من طريقة عمل لأخرى أثناء الممارسة', 'اكتساب المتعلم لعادة سيئة تعيق التقدم', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'لكي يتخلص المتعلم من عادة ضارة بشكل جذري وفعال وفقاً للإرشادات النفسية، يجب عليه ........', opts: ['إبراز مضار العادة والبدء بعزيمة قوية', 'إحلال عادة جديدة مفيدة محلها', 'عدم السماح بأي استثناءات أو أعذار أثناء محاولة الترك', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'المقياس الذي يمثل (الفترة الزمنية المنقضية بين ظهور المثير وصدور الاستجابة) في منحنيات التعلم ويستخدم في علم النفس التجريبي هو ........', opts: ['سعة الاستجابة', 'كمون الاستجابة (زمن الرجع)', 'درجة قوة العادة', 'مقاومة الانطفاء'], ans: 1 },
+  { t: 'mcq', q: 'من مظاهر التغير (الكيفي) في سلوك المتعلم والتي تدل على تقدمه وارتقائه في الأداء ........', opts: ['التخلص من التوتر العضلي والحركات الزائدة', 'زيادة المرونة في الأداء لتناسب الظروف والمواقف المتغيرة', 'زيادة الاستبصار بطبيعة العمل والثقة بالنفس', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'القواعد التربوية السليمة في توقيع "العقاب" تؤكد بوضوح على ضرورة ........', opts: ['إرشاد المتعلم للصواب قبل اللجوء للعقاب', 'ألا يوقع العقاب العنيف إلا في حالة الأخطاء المتكررة جداً', 'تناسب حجم العقاب وطبيعته مع حجم الخطأ', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'من الأساليب الحديثة لتقويم التلميذ تقويماً مستمراً والتي تعطي المعلم صورة شاملة عن شخصية التلميذ ........', opts: ['البطاقة المدرسية الشاملة', 'ملاحظة التلميذ أثناء مشاركته في النشاط المدرسي', 'معرفة مكانته الاجتماعية بين زملائه في الفصل', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'معرفة المتعلم لنتائج عمله ومقدار تقدمه (مقارنة بنفسه وليس بغيره) تؤدي نفسياً وتربوياً إلى ........', opts: ['إثارة حماسه وزيادة دافعيته للإنجاز', 'تصحيح أخطائه بسرعة', 'سرعة التعلم وتقليل الشعور بالملل', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'من طرق مراعاة "الفروق الفردية" داخل البيئة المدرسية لحل مشكلات التأخر الدراسي ........', opts: ['تقسيم التلاميذ إلى مجموعات متجانسة في التحصيل أو الذكاء', 'إعطاء واجبات مدرسية موحدة لجميع الطلاب بلا استثناء', 'توحيد طرق التدريس لضمان المساواة', 'جميع ما سبق'], ans: 0 },
+  { t: 'mcq', q: 'تقاس عمليتا الاكتساب والاحتفاظ (التذكر) في التعلم بعدة طرق ومقاييس نفسية منها ........', opts: ['طريقة التعرف (تقديم خيارات)', 'طريقة الاستدعاء أو الاسترجاع', 'طريقة إعادة الترتيب', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'لزيادة الرغبة التلقائية والتهيؤ النفسي للتعلم لدى الطلاب، يجب على المدرس القيام بـ ........', opts: ['التمهيد للدروس الجديدة لجذب الانتباه', 'خلق جو ودي إيجابي بين المعلم والمتعلم', 'ربط موضوعات التعلم بالدوافع والحاجات الطبيعية للتلميذ', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'يرى العالم "ثورنديك" أن انتقال أثر التعلم (من مادة دراسية إلى أخرى) يسهل حدوثه إذا اعتمد على نظرية ........', opts: ['التدريب الشكلي والملكات العقلية', 'العناصر المشتركة (في المحتوى أو الطريقة)', 'التعميم الكلي للموقف', 'الاستبصار الفجائي'], ans: 1 },
+  { t: 'mcq', q: 'يفيد علم النفس التربوي المدرس في فهم "سيكولوجية التلميذ" بشكل مباشر من خلال ........', opts: ['الإلمام بخصائص مراحل النمو', 'التعرف على الدوافع الطبيعية للتعلم', 'دراسة الفروق الفردية', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'يعتبر "النشاط المدرسي" جزءاً أساسياً مكملاً للمنهج الدراسي لأن ممارسته تساعد التلميذ على ........', opts: ['اكتشاف هواياته وتنميتها', 'استغلال وقت الفراغ بشكل إيجابي', 'تعويد الصبر والاعتماد على النفس', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'من القواعد النفسية السليمة التي يجب اتباعها لتكوين المهارات الحركية ........', opts: ['أخذ فكرة عامة ونظرة كلية عن المهارة أولاً', 'التدرج من البطء للدقة ثم السرعة', 'التركيز على الاستجابات الناجحة وتذوق لذة النجاح', 'كل ما سبق'], ans: 3 },
+  { t: 'mcq', q: 'إذا كان المتغير التابع لمنحنى التعلم (على المحور الرأسي) يقاس بـ "عدد الأخطاء" أو "مقدار الزمن المستغرق"، فإن شكل المنحنى سيكون غالباً ........', opts: ['صاعداً يرتفع لأعلى', 'هابطاً يتجه لأسفل', 'خطاً مستقيماً موازياً للمحور الأفقي', 'متذبذباً طوال الوقت'], ans: 1 },
+  { t: 'mcq', q: 'لكي يستطيع التلميذ تعلم مهارة (حل المشكلات) بطريقة علمية صحيحة، يجب عليه في خطوته الأولى أن ........', opts: ['يتأكد من فهم المشكلة ويحلل الموقف', 'يبدأ فوراً بالتجارب العشوائية العمياء', 'ينتظر المعلم ليقدم له الحل الجاهز', 'لا شيء مما سبق'], ans: 0 }
+];
+
+/* ─── Variables ─── */
+let currentIdx = 0;
+let userAnswers = new Array(questions.length).fill(null);
+let studentData = { name: '', id: '' };
+let startTime, timerInterval;
+window.submitted = false;
+
+window.onload = () => {
+  // Check Local Storage to prevent multiple entries
+  if(localStorage.getItem('psychExam_completed') === 'true') {
+    document.getElementById('registration-area').style.display = 'none';
+    document.getElementById('already-taken-area').style.display = 'block';
+  }
+};
+
+/* ─── Engine Functions ─── */
+function startExam() {
+  const nameInput = document.getElementById('student-name').value.trim();
+  const errDiv = document.getElementById('name-error');
+  
+  if(!nameInput || nameInput.length < 3) {
+    errDiv.style.display = 'block';
+    return;
+  }
+  errDiv.style.display = 'none';
+  
+  // Create Student ID (Unique)
+  const uniqueID = 'STU-' + Math.floor(100000 + Math.random() * 900000);
+  studentData.name = nameInput;
+  studentData.id = uniqueID;
+  
+  // Start Time
+  startTime = Date.now();
+  startTimer();
+
+  // Switch Slide
+  switchSlide('slide-intro', 'slide-quiz');
+  renderQuestion();
+}
+
+function startTimer() {
+  const timerUI = document.getElementById('top-timer');
+  timerInterval = setInterval(() => {
+    let diff = Math.floor((Date.now() - startTime) / 1000);
+    let m = Math.floor(diff / 60).toString().padStart(2, '0');
+    let s = (diff % 60).toString().padStart(2, '0');
+    timerUI.innerText = `${m}:${s}`;
+  }, 1000);
+}
+
+function renderQuestion() {
+  const q = questions[currentIdx];
+  
+  // Update Header
+  document.getElementById('q-counter').innerText = `سؤال ${currentIdx + 1} من ${questions.length}`;
+  document.getElementById('q-type').innerText = q.t === 'tf' ? 'تفكير ناقد (صواب / خطأ)' : 'اختيار من متعدد';
+  
+  // Update Text
+  document.getElementById('q-text').innerText = q.q;
+  
+  // Update Progress Bar
+  const pct = (currentIdx / (questions.length - 1)) * 100;
+  document.getElementById('progress-fill').style.width = `${pct}%`;
+
+  // Render Options
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  
+  q.opts.forEach((optText, i) => {
+    const btn = document.createElement('button');
+    btn.className = `option-btn ${userAnswers[currentIdx] === i ? 'selected' : ''}`;
+    btn.onclick = () => selectOption(i);
+    btn.innerHTML = `<div class="option-radio"></div> ${optText}`;
+    container.appendChild(btn);
+  });
+
+  // Buttons visibility
+  document.getElementById('btn-prev').disabled = (currentIdx === 0);
+  
+  if(currentIdx === questions.length - 1) {
+    document.getElementById('btn-next').style.display = 'none';
+    document.getElementById('btn-finish').style.display = 'flex';
+  } else {
+    document.getElementById('btn-next').style.display = 'flex';
+    document.getElementById('btn-finish').style.display = 'none';
+  }
+}
+
+function selectOption(optIndex) {
+  userAnswers[currentIdx] = optIndex;
+  renderQuestion(); // Re-render to show selection
+}
+
+function nextQuestion() {
+  if (currentIdx < questions.length - 1) {
+    currentIdx++;
+    renderQuestion();
+  }
+}
+
+function prevQuestion() {
+  if (currentIdx > 0) {
+    currentIdx--;
+    renderQuestion();
+  }
+}
+
+function switchSlide(hideId, showId) {
+  document.getElementById(hideId).classList.remove('active');
+  document.getElementById(showId).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function finishExam() {
+  // Check if all answered
+  const unanwered = userAnswers.filter(a => a === null).length;
+  if(unanwered > 0) {
+    const confirmSubmit = confirm(`هناك ${unanwered} أسئلة لم تقم بالإجابة عليها. هل أنت متأكد من رغبتك في التسليم؟`);
+    if(!confirmSubmit) return;
+  }
+
+  clearInterval(timerInterval);
+  const timeSpentSec = Math.floor((Date.now() - startTime) / 1000);
+  const m = Math.floor(timeSpentSec / 60).toString().padStart(2, '0');
+  const s = (timeSpentSec % 60).toString().padStart(2, '0');
+  const finalTimeStr = `${m} دقيقة و ${s} ثانية`;
+
+  // Calculate Score
+  let score = 0;
+  userAnswers.forEach((ans, i) => {
+    if(ans === questions[i].ans) score++;
+  });
+  
+  const percentage = Math.round((score / questions.length) * 100);
+  
+  // Rating Logic
+  let rating = '';
+  if(percentage >= 90) rating = 'ممتاز 🌟';
+  else if(percentage >= 75) rating = 'جيد جداً 👍';
+  else if(percentage >= 60) rating = 'جيد 📚';
+  else rating = 'يحتاج إلى مراجعة ⚠️';
+
+  // Prepare Data for Google Form
+  const f_name = `${studentData.name} (ID: ${studentData.id})`;
+  const f_score = score.toString();
+  const f_percent = `${percentage}%`;
+  
+  document.getElementById('f-name').value = f_name;
+  document.getElementById('f-score').value = f_score;
+  document.getElementById('f-percent').value = f_percent;
+  document.getElementById('f-rating').value = rating;
+  document.getElementById('f-time').value = finalTimeStr;
+
+  // Show Sync Overlay
+  document.getElementById('sync-overlay').classList.add('show');
+  
+  // Submit
+  window.submitted = true;
+  document.getElementById('google-form').submit();
+
+  // Populate Results UI
+  document.getElementById('res-name').innerText = studentData.name;
+  document.getElementById('res-score').innerText = `${score} / ${questions.length}`;
+  document.getElementById('res-percent').innerText = `${percentage}%`;
+  document.getElementById('res-rating').innerText = rating;
+  document.getElementById('res-time').innerText = finalTimeStr;
+  document.getElementById('res-id').innerText = studentData.id;
+
+  // Ring Animation
+  const circ = 2 * Math.PI * 44; 
+  const offset = circ - (circ * percentage / 100);
+  setTimeout(() => {
+    document.getElementById('score-circle').style.strokeDashoffset = offset;
+  }, 1000);
+
+  // Set Local Storage
+  localStorage.setItem('psychExam_completed', 'true');
+}
+
+function onFormSubmitted() {
+  // Called when hidden iframe loads after submission
+  setTimeout(() => {
+    document.getElementById('sync-overlay').classList.remove('show');
+    switchSlide('slide-quiz', 'slide-result');
+  }, 1500); // Small delay to simulate processing and show the animation
+}
+</script>
+
+</body>
+</html>
