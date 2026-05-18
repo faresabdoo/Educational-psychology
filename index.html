@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>موسوعة علم النفس التربوي - الصفحة الرئيسية</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ==========================================================================
+   UI System - Oceanic Indigo High-Contrast
+   ========================================================================== */
+:root {
+  --c-sky: #0284c7; 
+  --c-indigo: #4f46e5;
+  --c-navy: #0f172a; 
+  --c-cyan-light: #e0f2fe; 
+  --c-accent: #f59e0b; 
+  --c-bg: #f8fafc; 
+  --c-surface: #ffffff;
+  --c-text-main: #0f172a; 
+  --c-text-muted: #475569; 
+  --font-main: 'Cairo', sans-serif;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --r-xl: 24px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--c-bg);
+  color: var(--c-text-main);
+  line-height: 1.6;
+  background-image: radial-gradient(var(--c-cyan-light) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+}
+
+/* Header & Hero Section */
+.hero {
+  background: linear-gradient(135deg, var(--c-navy) 0%, var(--c-indigo) 100%);
+  color: white;
+  padding: 60px 20px 80px;
+  text-align: center;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="2" fill="none"/></svg>') repeat;
+  opacity: 0.5;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Main Grid Layout */
+.container {
+  max-width: 1100px;
+  margin: -40px auto 50px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 20;
+}
+
+.bento-grid {
+  display: grid;
+  /* المتجاوبية: عمود واحد في الموبايل، وعمودين أو ثلاثة في الشاشات الأكبر */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+/* Course Cards */
+.card {
+  background: var(--c-surface);
+  border-radius: var(--r-xl);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--c-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--c-sky);
+}
+
+.icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: var(--c-cyan-light);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--c-indigo);
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--c-navy);
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  flex-grow: 1;
+}
+
+/* Button */
+.btn-enter {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--c-bg);
+  color: var(--c-indigo);
+  text-align: center;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  border: 2px solid var(--c-indigo);
+  transition: all 0.3s ease;
+}
+
+.card:hover .btn-enter {
+  background: linear-gradient(135deg, var(--c-indigo), var(--c-sky));
+  color: white;
+  border-color: transparent;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* شارات الفصول */
+.chapter-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f1f5f9;
+  color: var(--c-text-muted);
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+</style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1>موسوعة علم النفس التربوي</h1>
+      <p>منصة تعليمية تفاعلية تعتمد على التلعيب والمحاكاة لتقديم مفاهيم علم النفس التربوي بشكل مبسط وممتع.</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="bento-grid">
+
+      <!-- الدرس الأول -->
+      <div class="card">
+        <div class="icon-wrapper"><i class="fa-solid fa-book-bookmark"></i></div>
+        <span class="chapter-badge">الفصل الأول</span>
+        <h2>أسس علم النفس التربوي</h2>
+        <p>مقدمة شاملة عن التربية، أهدافها، أهمية العلم للمجتمع والأسرة، ودور المعلم ومجالات دراسته.</p>
+        <a href="Educational_psychology_ch_1.html" class="btn-enter">ابدأ التعلم <i class="fa-solid fa-arrow-left"></i></a>
+      </div>
+
+      <!-- الدرس الثاني -->
+      <div class="card">
+        <div class="icon-wrapper"><i class="fa-solid fa-flask"></i></div>
+        <span class="chapter-badge">الفصل الثاني (الجزء 1)</span>
+        <h2>طبيعة عملية التعلم</h2>
+        <p>استكشاف معنى التعلم، عوامله المحفزة، الدوافع النفسية، ونتائجه السلوكية في بناء العادات والمهارات.</p>
+        <a href="Educational_psychology_ch_2_p1.html" class="btn-enter">ابدأ التعلم <i class="fa-solid fa-arrow-left"></i></a>
+      </div>
+
+      <!-- الدرس الثالث -->
+      <div class="card">
+        <div class="icon-wrapper"><i class="fa-solid fa-chart-line"></i></div>
+        <span class="chapter-badge">الفصل الثاني (الجزء 2)</span>
+        <h2>منحنى التعلم</h2>
+        <p>تحليل مسار التقدم في التعلم عبر الرسوم البيانية، هضبة التعلم، ومقاييس التعلم الـ 12 المعتمدة.</p>
+        <a href="Educational_psychology_ch_2_p2.html" class="btn-enter">ابدأ التعلم <i class="fa-solid fa-arrow-left"></i></a>
+      </div>
+
+      <!-- الدرس الرابع -->
+      <div class="card">
+        <div class="icon-wrapper"><i class="fa-solid fa-network-wired"></i></div>
+        <span class="chapter-badge">الفصل الثالث (الجزء 1)</span>
+        <h2>نظرية الارتباط (ثورنديك)</h2>
+        <p>التعلم بالمحاولة والخطأ، التجريب المعملي، وقوانين التعلم الكبرى (الأثر، الاستعداد، والتدريب).</p>
+        <a href="Educational_psychology_ch_3_p1.html" class="btn-enter">ابدأ التعلم <i class="fa-solid fa-arrow-left"></i></a>
+      </div>
+
+      <!-- الدرس الخامس -->
+      <div class="card">
+        <div class="icon-wrapper"><i class="fa-solid fa-lightbulb"></i></div>
+        <span class="chapter-badge">الفصل الثالث (الجزء 2)</span>
+        <h2>الاستبصار (الجشطالت)</h2>
+        <p>التعلم بالإدراك والفهم الفجائي للحل، تجارب كوهلر على القردة، وأهمية النظرة الكلية للمواقف.</p>
+        <a href="Educational_psychology_ch_3_p2.html" class="btn-enter">ابدأ التعلم <i class="fa-solid fa-arrow-left"></i></a>
+      </div>
+
+      <!-- الدرس السادس -->
+      <div class="card">
+        <div class="icon-wrapper"><i class="fa-solid fa-shuffle"></i></div>
+        <span class="chapter-badge">الفصل الثالث (الجزء 3)</span>
+        <h2>انتقال أثر التعلم</h2>
+        <p>كيف تؤثر خبراتنا السابقة على تعلم المهارات الجديدة؟ الانتقال الإيجابي والسلبي، والنقل الأفقي والعمودي.</p>
+        <a href="Educational_psychology_ch_3_p3.html" class="btn-enter">ابدأ التعلم <i class="fa-solid fa-arrow-left"></i></a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>جميع الحقوق محفوظة &copy; Fares WebCode</p>
+  </footer>
+
+</body>
+</html>

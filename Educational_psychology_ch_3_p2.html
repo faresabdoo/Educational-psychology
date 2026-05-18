@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>علم النفس التربوي - نظرية الجشطالت والاستبصار</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Canvas Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+/* ==========================================================================
+   UI System - Oceanic Indigo High-Contrast
+   ========================================================================== */
+:root {
+  --c-sky: #0284c7; 
+  --c-indigo: #4f46e5;
+  --c-navy: #0f172a; 
+  --c-cyan-light: #e0f2fe; 
+  --c-accent: #f59e0b; 
+  --c-bg: #f8fafc; 
+  --c-surface: #ffffff;
+  --c-text-main: #0f172a; 
+  --c-text-muted: #475569; 
+  --c-success: #10b981;
+  --c-danger: #ef4444;
+  --c-border: #e2e8f0;
+  --font-main: 'Cairo', sans-serif;
+  --font-story: 'Tajawal', sans-serif;
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --r-xl: 24px;
+  --t-base: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--c-bg);
+  color: var(--c-text-main);
+  line-height: 1.8;
+  background-image: radial-gradient(var(--c-cyan-light) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+  overflow-x: hidden;
+}
+
+/* Progress Tracking */
+#progress-container { position: fixed; top: 0; left: 0; right: 0; height: 7px; background: var(--c-border); z-index: 1100; }
+#progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--c-sky), var(--c-indigo)); transition: width var(--t-base); }
+
+/* Header */
+header {
+  position: fixed; top: 7px; left: 0; right: 0; height: 65px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 25px; border-bottom: 1px solid var(--c-border); z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 900; color: var(--c-navy); font-size: 1.2rem; }
+.brand i { color: var(--c-sky); font-size: 1.5rem; }
+.stats { display: flex; align-items: center; gap: 10px; }
+.badge { background: var(--c-bg); border: 2.5px solid var(--c-border); padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+
+/* Main Container */
+main { padding: 100px 20px 130px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+.slide { display: none; width: 100%; max-width: 950px; animation: slideReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.slide.active { display: block; }
+@keyframes slideReveal { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Slide Components */
+.card { background: var(--c-surface); border-radius: var(--r-xl); padding: clamp(25px, 5vw, 45px); box-shadow: var(--shadow-lg); border: 1px solid rgba(2, 132, 199, 0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+.tag { display: inline-block; padding: 6px 18px; background: var(--c-cyan-light); color: var(--c-sky); border-radius: 50px; font-size: 0.85rem; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; border: 1.5px solid var(--c-sky); }
+
+.story-box { background: linear-gradient(to left, var(--c-bg), #f0f9ff); border-right: 6px solid var(--c-indigo); padding: 25px; border-radius: 16px; margin: 25px 0; display: flex; gap: 20px; align-items: flex-start; }
+.story-box i { font-size: 2.5rem; color: var(--c-indigo); opacity: 0.7; }
+.story-box p { font-family: var(--font-story); font-style: italic; margin: 0; font-size: 1.25rem; color: var(--c-navy); font-weight: 600; }
+
+.content-body { font-size: 1.25rem; font-weight: 700; color: var(--c-navy); margin-bottom: 30px; text-align: justify; border-right: 4px solid var(--c-cyan-light); padding-right: 20px; line-height: 1.8; }
+
+.visual-box { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px dashed var(--c-sky); border-radius: 20px; padding: 35px; margin: 30px 0; text-align: center; }
+.v-icon { font-size: 5rem; color: var(--c-sky); margin-bottom: 15px; }
+
+/* Interactive Activity */
+.activity-box { background: #ffffff; border: 3px solid var(--c-sky); border-radius: var(--r-xl); padding: 35px; margin-top: 25px; box-shadow: inset 0 0 20px rgba(2, 132, 199, 0.05); }
+.act-btn {
+  width: 100%; background: #ffffff; border: 2px solid var(--c-border); padding: 20px;
+  border-radius: 16px; cursor: pointer; font-family: var(--font-main); font-size: 1.15rem;
+  font-weight: 800; text-align: right; margin-bottom: 15px; transition: all 0.25s ease;
+  display: flex; justify-content: space-between; align-items: center; color: var(--c-navy);
+}
+.act-btn:hover:not(:disabled) { border-color: var(--c-indigo); background: #f5f3ff; transform: translateX(-10px); }
+.act-btn.correct { background: #dcfce7; border-color: var(--c-success); color: #166534; }
+.act-btn.wrong { background: #fee2e2; border-color: var(--c-danger); color: #991b1b; }
+
+.feedback-msg { padding: 20px; border-radius: 12px; margin-top: 20px; font-weight: 900; font-size: 1.15rem; display: none; border: 1px solid rgba(0,0,0,0.1); }
+
+/* Footer Controls */
+footer {
+  position: fixed; bottom: 0; left: 0; right: 0; padding: 18px 40px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--c-border);
+  display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+}
+.btn { padding: 14px 35px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: var(--font-main); font-size: 1.05rem; }
+.btn-primary { background: linear-gradient(135deg, var(--c-indigo), var(--c-sky)); color: white; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3); }
+.btn-outline { background: white; color: var(--c-text-muted); border: 2.5px solid var(--c-border); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Stats Display */
+.toast { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: var(--c-navy); color: white; padding: 15px 30px; border-radius: 50px; z-index: 2000; display: none; font-weight: 800; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  20% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-container"><div id="progress-bar"></div></div>
+
+<header>
+  <div class="brand"><i class="fa-solid fa-lightbulb"></i> نظرية الجشطالت والاستبصار</div>
+  <div class="stats">
+    <div class="badge"><i class="fa-solid fa-bolt" style="color:var(--c-accent)"></i> <span id="scoreDisplay">0</span> XP</div>
+    <div class="badge" style="color:var(--c-indigo);"><i class="fa-solid fa-award"></i> <span id="levelDisplay">مستكشف</span></div>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<main id="main-container"></main>
+
+<footer>
+  <button class="btn btn-outline" id="btn-prev" onclick="move(-1)">السابق</button>
+  <div id="counter" style="font-weight:900; color:var(--c-navy); font-size: 1.2rem;">1 / 35</div>
+  <button class="btn btn-primary" id="btn-next" onclick="move(1)">التالي</button>
+</footer>
+
+<script>
+/* ==========================================================================
+   DATASET: 39 شريحة كاملة للدرس الثاني (الجشطالت والاستبصار) مع التصحيح الشامل للـ OCR
+   ========================================================================== */
+const SLIDE_DATA = [
+  {
+    tag: "مقدمة",
+    title: "نظرية التعلم بالاستبصار (الجشطالت)",
+    story: "هل نتعلم دائماً بالتجربة العمياء؟ أم أن هناك لحظة إشراق فجائية ندرك فيها الحل كاملاً؟ هذا ما سنكتشفه مع علماء ألمانيا.",
+    content: "يطلق على هذه النظرية أسماء كثيرة منها: نظرية المجال، الاستبصار، إدراك العلاقات، أو الجشطالت. وقد ساهمت بشكل كبير في تغيير وتطوير فهمنا لعملية التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-brain"></i></div><div style="font-weight:900; color:var(--c-indigo)">التعلم = ومضة الفهم الفجائي (الاستبصار)</div>`,
+    quiz: { q: "ما هي الأسماء التي تطلق على هذه النظرية؟", opts: ["نظرية الاستبصار والجشطالت ونظرية المجال", "نظرية المحاولة والخطأ فقط"], ans: 0, fb: "أحسنت! تعدد الأسماء يعكس عمق وشمولية هذه النظرية المعرفية." }
+  },
+  {
+    tag: "الرواد",
+    title: "مؤسسو مدرسة الجشطالت",
+    story: "ثلاثة علماء ألمان غيروا مجرى علم النفس، وأثبتوا أن العقل البشري (وحتى الحيواني) أعقد من مجرد آلة لتكرار الحركات.",
+    content: "ظهر هذا التيار فيما كتبه رواد هذه المدرسة من العلماء الألمان: (كوهلر، كوفكا، فيرتهايمر). ومن أهم مؤلفاتهم كتاب كوهلر (عقلية القردة - 1924) وكتاب كوفكا (نمو العقل - 1925).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-users-gear"></i></div><div style="font-weight:900; color:var(--c-indigo)">كوهلر، كوفكا، فيرتهايمر (رواد المدرسة الألمانية)</div>`,
+    quiz: { q: "من هم أبرز مؤسسي نظرية الجشطالت؟", opts: ["العلماء الألمان: كوهلر، كوفكا، فيرتهايمر", "بافلوف وثورنديك"], ans: 0, fb: "صحيح! هؤلاء هم أعمدة مدرسة الجشطالت الإدراكية." }
+  },
+  {
+    tag: "نقد الماضي",
+    title: "رفض نظرية المحاولة والخطأ لثورنديك",
+    story: "كيف تقيس ذكاء كائن حي وتطلب منه حل لغز وأنت تخفي عنه أجزاء الصورة؟ هذا ليس ذكاءً، هذا حظ أعمى!",
+    content: "رفض الجشطالتيون رفضاً قاطعاً تفسير ثورنديك للتعلم (بالمحاولة والخطأ)، وعابوا عليه التجارب التي أجراها على القطط باستخدام (المتاهات العمياء).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ban"></i></div><div style="font-weight:900; color:var(--c-danger)">رفض التخبط العشوائي والمتاهات العمياء ❌</div>`,
+    quiz: { q: "ما هو الموقف الذي اتخذه علماء الجشطالت من نظرية ثورنديك؟", opts: ["رفضوها قاطعاً وعابوا استخدام المتاهات العمياء", "وافقوا عليها تماماً وطوروها"], ans: 0, fb: "نعم، رأوا أن التخبط العشوائي لا يعكس التعلم الحقيقي." }
+  },
+  {
+    tag: "نقد الماضي",
+    title: "لماذا رُفضت المتاهات العمياء؟",
+    story: "الحيوان في المتاهة المظلمة كالإنسان المغمض العينين؛ يتخبط لأنه مضطر، لا لأنه غبي.",
+    content: "المتاهات المغلقة لم تسمح للحيوان بإظهار قدرته على التعلم بالاستبصار، لأنه لم يستطع (إدراك الموقف الكلي) وعناصره. فكانت النتيجة الحتمية هي لجوؤه للتخبط العشوائي (المحاولة والخطأ).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-eye-slash"></i></div><div style="font-weight:900; color:var(--c-indigo)">حجب الرؤية الكلية ⬅️ يجبر الكائن على التخبط العشوائي</div>`,
+    quiz: { q: "لماذا تضطر الحيوانات للتخبط العشوائي في المتاهات العمياء حسب الجشطالت؟", opts: ["لأنها لا تستطيع إدراك الموقف التعليمي بشكل كلي واضح", "لأنها تحب اللعب العشوائي"], ans: 0, fb: "بالضبط! غياب الصورة الكاملة يمنع الاستبصار." }
+  },
+  {
+    tag: "جوهر النظرية",
+    title: "إدراك العلاقات والموقف الكلي",
+    story: "التعلم الحقيقي يحدث عندما تنظر من الأعلى فترى كيف ترتبط القطع المتناثرة ببعضها لتشكل حلاً.",
+    content: "عندما أجرى علماء الجشطالت تجاربهم على الحيوانات والإنسان، وجدوا أن التعلم يحدث على أساس (إدراك الموقف الكلي) والمجال الذي يحيط بالمشكلة كوحدة، وأن قدرة الحيوان على (إدراك العلاقات) هي ما يساعده على التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-link"></i></div><div style="font-weight:900; color:var(--c-indigo)">التعلم = إدراك الموقف الكلي + فهم العلاقات</div>`,
+    quiz: { q: "يحدث التعلم عند الجشطالت بناءً على:", opts: ["إدراك الموقف الكلي والعلاقات بين أجزائه", "تكرار الحركات دون فهم"], ans: 0, fb: "صحيح! الفهم والإدراك هما مفتاح نظرية الجشطالت." }
+  },
+  {
+    tag: "المفهوم",
+    title: "ماذا تعني كلمة جشطالت (Gestalt)؟",
+    story: "الوجه البشري ليس مجرد عينين وأنف وفم مبعثرة، بل هو 'صيغة كلية' تمنحنا شكلاً له معنى وهيكل.",
+    content: "كلمة جشطالت تعني: تكوين كلي عام، أو تنظيم، أو صيغة، أو شكل، أو هيئة كلية. وتتضمن هذه الوحدة النظرة إلى 'الكل' قبل 'الجزء'، على اعتبار أن الكل هو دائماً أكبر من مجرد مجموع الأجزاء المكونة له.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-puzzle-piece"></i></div><div style="font-weight:900; color:var(--c-indigo)">الكل أكبر وأهم من مجرد مجموع الأجزاء المنفصلة</div>`,
+    quiz: { q: "المبدأ الأساسي لكلمة 'جشطالت' هو أن:", opts: ["الكل يسبق الجزء، والكل أكبر من مجموع أجزائه", "الجزء أهم من الكل"], ans: 0, fb: "أحسنت! النظرة الكلية الشاملة هي جوهر الجشطالت." }
+  },
+  {
+    tag: "تاريخ النظرية",
+    title: "ثورة ضد النظرية البنائية (العنصرية)",
+    story: "علم النفس ليس كيمياء؛ لا يمكنك تفكيك الإنسان إلى ذرات منفصلة لفهمه، الإنسان كتلة متكاملة.",
+    content: "قامت نظرية الجشطالت كثورة على (النظرية العنصرية/البنائية) التي تأثرت بعلم الكيمياء وفكرة تحليل المواد إلى عناصرها الأولية وجزيئاتها، فرفض الجشطالتيون تحليل السلوك إلى ذرات وعناصر منفصلة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-flask-vial"></i></div><div style="font-weight:900; color:var(--c-indigo)">رفض تحليل السلوك البشري وكأنه مركبات كيميائية معزولة</div>`,
+    quiz: { q: "نظرية الجشطالت قامت كثورة ضد أي فكرة؟", opts: ["ضد تحليل السلوك إلى عناصر وأجزاء منفصلة (النظرية البنائية)", "ضد تدريس العلوم في المدارس"], ans: 0, fb: "صحيح! رفضوا تفكيك الإنسان إلى أجزاء آلية." }
+  },
+  {
+    tag: "التأثر بالعلوم",
+    title: "استعارة مصطلح 'المجال' من الفيزياء",
+    story: "كما تتجاذب الكواكب في الفضاء ضمن مجال مغناطيسي، تتفاعل الأفكار والدوافع في عقولنا ضمن مجال نفسي.",
+    content: "اقتبس علماء الجشطالت من علم الفيزياء مصطلح (المجال). واعتبروا أن كل ما يحدث في المجال البيئي أو النفسي للكائن الحي هو نتيجة لتنظيم (القوى الفاعلة) في هذا المجال.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-magnet"></i></div><div style="font-weight:900; color:var(--c-indigo)">السلوك ناتج عن تفاعل القوى داخل (المجال الإدراكي)</div>`,
+    quiz: { q: "من أي علم استعار علماء الجشطالت مصطلح وفكرة 'المجال' والقوى الفاعلة؟", opts: ["من علم الفيزياء", "من علم الفلك"], ans: 0, fb: "نعم، استعاروا ديناميكية القوى والمجالات من الفيزياء." }
+  },
+  {
+    tag: "التوازن النفسي",
+    title: "السلوك كعملية بحث عن التوازن",
+    story: "عندما تجوع، يختل توازنك، فتبحث عن الطعام لتعيد التوازن.. التعلم هو حل لغز يعيد لعقلك الهدوء والتوازن.",
+    content: "نصيب الكائن الحي من السلوك هو محصلة ناتجة عن تفاعل القوى الفاعلة المؤثرة فيه (الداخلية والخارجية). السلوك يهدف دائماً للوصول إلى إحداث حالة (توازن) بين القوى المختلفة المؤثرة في الفرد.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-scale-balanced"></i></div><div style="font-weight:900; color:var(--c-indigo)">السلوك = استعادة التوازن بين الدوافع والبيئة</div>`,
+    quiz: { q: "يهدف السلوك الإنساني حسب هذه النظرية إلى:", opts: ["إحداث حالة توازن بين القوى الداخلية والخارجية", "إحداث فوضى وخلل مستمر"], ans: 0, fb: "بالضبط! حل المشكلة يعيد التوازن المعرفي للفرد." }
+  },
+  {
+    tag: "الإدراك",
+    title: "أهمية الإدراك والوعي",
+    story: "أن ترى الشيء بعينك (إحساس) هو شيء، وأن تفهم معناه وقيمته (إدراك) هو شيء آخر تماماً.",
+    content: "أبحاث الجشطالت كانت موجهة أساساً إلى 'سيكولوجية الإدراك'. الإدراك هو الخطوة التي تسبق التعلم بالاستبصار، وهو يتضمن شيئاً من (الوعي والتمييز) الذي لا يتم من غير الإحساس.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-eye"></i></div><div style="font-weight:900; color:var(--c-indigo)">إحساس (رؤية) ⬅️ وعي وتمييز (إدراك) ⬅️ استبصار (تعلم)</div>`,
+    quiz: { q: "ما هي الخطوة النفسية التي تسبق وتُمهد للتعلم بالاستبصار؟", opts: ["الإدراك (الذي يتضمن الوعي والتمييز)", "النوم العميق"], ans: 0, fb: "صحيح! لا استبصار بدون إدراك واعٍ للمشكلة." }
+  },
+  {
+    tag: "آلية الإدراك",
+    title: "ندرك 'الكل' قبل 'الجزء'",
+    story: "عندما تقابل صديقك، أنت تدرك وجهه كاملاً أولاً، ولا تبدأ بعد رموش عينيه أو مسام أنفه!",
+    content: "المهم في فكرة الجشطالت أن المدركات التي ندركها تتجمع كـ 'وحدات كلية' أولاً. نحن ندرك الأشياء المحيطة ككل عام، وبعد ذلك نميل للتدقيق في التفاصيل والأجزاء التي تقع تحت حواسنا.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-user-astronaut"></i></div><div style="font-weight:900; color:var(--c-indigo)">الإدراك الكلي ⬅️ يسبق تدقيق التفاصيل الجزئية</div>`,
+    quiz: { q: "حسب الجشطالت، كيف ندرك الأشياء المحيطة بنا في البداية؟", opts: ["كوحدات كلية متكاملة (ندرك الكل أولاً)", "كأجزاء وتفاصيل صغيرة مبعثرة أولاً"], ans: 0, fb: "أحسنت! العقل يميل لالتقاط الصورة الكبيرة دائماً." }
+  },
+  {
+    tag: "تفسير التعلم",
+    title: "ليس محاولة وخطأ، بل إدراك علاقات",
+    story: "الحيوان الذكي لا يضرب رأسه بالجدار مائة مرة؛ بل يتوقف، يتأمل، يفهم الرابط، ثم يحل اللغز.",
+    content: "أكد الجشطالتيون أن التعلم قد يحدث نتيجة إدراك العلاقات التي تساعد على حل الموقف، وليس فقط نتيجة المحاولة والخطأ. وهذا يتوقف على ما عند الحيوان (أو الفرد) من ذكاء وقدرة عقلية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-network-wired"></i></div><div style="font-weight:900; color:var(--c-indigo)">الذكاء = القدرة على إدراك العلاقات الخفية في الموقف</div>`,
+    quiz: { q: "التعلم عند الجشطالت يعتمد بشكل أساسي على:", opts: ["إدراك العلاقات وحل الموقف كلياً بناء على الذكاء", "التكرار العضلي البحت"], ans: 0, fb: "نعم، فهم العلاقة بين أجزاء المشكلة هو جوهر التعلم." }
+  },
+  {
+    tag: "تجارب كوهلر 1",
+    title: "تجربة الصندوق (كوهلر والقرد)",
+    story: "الموز معلق بعيداً، والصندوق ملقى في زاوية.. متى يدرك القرد العلاقة السحرية بينهما؟",
+    content: "أجرى (كوهلر) تجربة الصندوق: وضع قرداً جائعاً في قفص، وعلق موزة في السقف، ووضع صندوقاً بالداخل. القفز لا يوصل للموز. بعد تروٍّ، أدرك القرد العلاقة بين الصندوق للوصول للهدف، فسحب الصندوق وحصل على الموز.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-box-open"></i></div><div style="font-weight:900; color:var(--c-indigo)">قرد + صندوق + موز معلق = إدراك علاقة فراغية</div>`,
+    quiz: { q: "كيف استطاع القرد الوصول للموز في هذه التجربة؟", opts: ["بإدراك العلاقة بين الصندوق والموز واستخدام الصندوق كأداة", "بالقفز العشوائي حتى سقط الموز صدفة"], ans: 0, fb: "صحيح! الاستبصار جعله يستخدم الصندوق كحل ذكي." }
+  },
+  {
+    tag: "تجارب كوهلر 2",
+    title: "تجربة العصا (دمج الأدوات)",
+    story: "إذا لم تكفِ الأداة القصيرة، فاصنع أداة طويلة.. قمة الذكاء هي دمج العناصر لخلق أداة جديدة.",
+    content: "تجربة أخرى لـ كوهلر (صنف الشمبانزي الذكي): الموز خارج القفص، وبداخل القفص 'عصاتان قصيرتان'. عصا واحدة لا تكفي، لكن يمكن إدخال إحداهما في الأخرى لصنع عصا طويلة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div style="font-weight:900; color:var(--c-indigo)">عصا قصيرة ➕ عصا قصيرة 🟰 عصا طويلة (استبصار)</div>`,
+    quiz: { q: "في تجربة العصا، ما هو التحدي الذي واجه الشمبانزي؟", opts: ["أن يدرك إمكانية تركيب عصاتين قصيرتين معاً لصنع عصا طويلة", "أن يكسر القفص بقوته"], ans: 0, fb: "بالضبط! إدراك العلاقة التركيبية هو ذروة الاستبصار." }
+  },
+  {
+    tag: "تجارب كوهلر 2",
+    title: "اليأس ثم ومضة الفهم الفجائية",
+    story: "يأتي الحل غالباً عندما نستسلم للمشكلة ونتوقف عن التخبط، لنتأمل المشهد بهدوء.",
+    content: "جرب القرد كل عصا بمفردها وفشل، حتى يئس وجلس. وفجأة (بالمصادفة أو التأمل) أدخل إحداهما في تجويف الأخرى، فصارت عصا طويلة. استبصر الحل، وجذب بها الموزة فوراً، وكررها بسهولة في اليوم التالي.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-bolt"></i></div><div style="font-weight:900; color:var(--c-indigo)">يأس وتوقف ⬅️ ومضة فهم (Aha moment) ⬅️ حل فوري</div>`,
+    quiz: { q: "سهولة تكرار القرد للحل في اليوم التالي تدل على أنه:", opts: ["تعلم بالاستبصار والفهم العميق للمبدأ", "مجرد حيوان محظوظ"], ans: 0, fb: "نعم! ما تفهمه بالاستبصار لا تنساه ويسهل تكراره." }
+  },
+  {
+    tag: "تحديد الأداة",
+    title: "الأداة ليست مجرد شيء مادي",
+    story: "العصا في يد الغاضب سلاح، وفي يد الذكي أداة صيد؛ العقل هو من يمنح الأشياء وظيفتها.",
+    content: "الاستبصار في هذه التجارب لم يكن مجرد اكتفاء برؤية الأدوات، بل 'تحديد الأداة' وارتباطها بإدراك العلاقة بينها وبين ما يريده الكائن. أي تحويل الشيء المادي إلى 'وسيلة' لتحقيق هدف.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><div style="font-weight:900; color:var(--c-indigo)">فهم الوظيفة الإدراكية للأداة ⬅️ حل المشكلة</div>`,
+    quiz: { q: "الأداة في التعلم بالاستبصار تستمد قيمتها من:", opts: ["إدراك الفرد للعلاقة بين الأداة والهدف الذي يريده", "لونها وحجمها فقط"], ans: 0, fb: "صحيح! الإدراك العقلي للوظيفة هو الأهم." }
+  },
+  {
+    tag: "دور الذكاء",
+    title: "الذكاء شرط للاستبصار",
+    story: "الاستبصار ليس سحراً؛ هو يحتاج لعقل ناضج وقدرة على التحليل والربط بين المتناقضات.",
+    content: "أكد كوهلر أن التعلم الاستبصاري يعتمد على 'الذكاء'. الحيوان يمتلك قدرة عقلية لاستيعاب المجال، وقد يقف الذكاء أحياناً حائراً، لكنه سرعان ما يغير الموقف بنظرة استبصارية ويصل للحل.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-brain"></i></div><div style="font-weight:900; color:var(--c-indigo)">الذكاء العالي = قدرة أسرع على الاستبصار وإدراك العلاقات</div>`,
+    quiz: { q: "حسب كوهلر، التعلم بالاستبصار يعتمد بشكل جوهري على:", opts: ["القدرة العقلية والذكاء", "القدرة العضلية والسرعة"], ans: 0, fb: "نعم، بدون قدرة عقلية لا يمكن ربط عناصر المشكلة." }
+  },
+  {
+    tag: "خطوات الاستبصار",
+    title: "1. فحص الموقف الكلي",
+    story: "القائد الناجح لا يهاجم قبل أن يستطلع أرض المعركة بالكامل؛ النظرة الشاملة هي الخطوة الأولى.",
+    content: "الخطوة الأولى في التعلم بالاستبصار هي: فحص الموقف ودراسته 'كلياً كوحدة واحدة'. يجب أن يحاط المتعلم بكامل أبعاد المشكلة وعناصرها قبل أن يبدأ بأي محاولة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-magnifying-glass-location"></i></div><div style="font-weight:900; color:var(--c-indigo)">المسح الشامل للمشكلة ⬅️ الفهم الدقيق للإطار</div>`,
+    quiz: { q: "ما هي أولى خطوات التعلم بالاستبصار؟", opts: ["فحص الموقف الكلي ودراسته كوحدة واحدة متكاملة", "البدء الفوري بالتجربة العشوائية"], ans: 0, fb: "أحسنت! الفحص الشامل يوفر الجهد العشوائي لاحقاً." }
+  },
+  {
+    tag: "خطوات الاستبصار",
+    title: "2. التروي وتركيز الانتباه",
+    story: "اللحظة التي يسود فيها الصمت والتأمل، هي اللحظة التي يولد فيها الحل الذكي.",
+    content: "الخطوة الثانية: يبدو على الكائن الحي 'التروي والتريث' لبعض اللحظات، ويتبع ذلك عملية عميقة من 'تركيز الانتباه' نحو عناصر الموقف المختلفة بحثاً عن المخرج.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-person-praying"></i></div><div style="font-weight:900; color:var(--c-indigo)">تريث + تأمل صامت = تركيز الانتباه</div>`,
+    quiz: { q: "ماذا يفعل الكائن بعد فحصه الشامل للموقف؟", opts: ["يتروى ويتريث ويركز انتباهه بعمق", "ينام فوراً"], ans: 0, fb: "صحيح! التأمل هو معمل صناعة الاستبصار." }
+  },
+  {
+    tag: "خطوات الاستبصار",
+    title: "3. محاولة تجربة الطرق المحتملة",
+    story: "العقل يرفض السخافات، ويجرب منطقياً الطرق التي تحمل نسبة نجاح أعلى بناءً على الاستطلاع الأولي.",
+    content: "الخطوة الثالثة: محاولة تجربة الطرق 'الأكثر احتمالاً' للوصول إلى الحل، مع رفض الحلول السخيفة أو غير المنطقية استناداً للتحليل المسبق.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-route"></i></div><div style="font-weight:900; color:var(--c-indigo)">تجربة الحلول المنطقية الممكنة ⬅️ استبعاد الحلول الخاطئة</div>`,
+    quiz: { q: "في هذه الخطوة، يميل المتعلم بالاستبصار إلى تجربة الطرق:", opts: ["الأكثر احتمالاً للحل والمنطقية", "الأسوأ والأكثر عشوائية"], ans: 0, fb: "نعم، التدخل يكون مدروساً وموجهاً نحو الهدف." }
+  },
+  {
+    tag: "خطوات الاستبصار",
+    title: "4 و 5. الانتقال الفجائي ومداومة النظر",
+    story: "تأتيك ومضة كالبرق، فتنقلك فوراً من الظلام إلى النور؛ ولا تحيد عينك عن الهدف أبداً.",
+    content: "4. يظهر التعلم بانتقال فجائي (سريع) من المحاولات الخاطئة إلى المحاولات الأكثر نجاحاً. 5. مداومة النظر وتكرار الانتباه بقوة نحو 'الهدف المقصود' (كتركيز نظر القرد على الطعام).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-rocket"></i></div><div style="font-weight:900; color:var(--c-indigo)">انتقال مفاجئ للحل 🚀 + تركيز البصر على الهدف 🎯</div>`,
+    quiz: { q: "الانتقال من المحاولات الخاطئة للحل الصحيح في الاستبصار يتميز بأنه:", opts: ["انتقال فجائي وسريع (ومضة إدراك)", "انتقال بطيء وممل جداً"], ans: 0, fb: "صحيح! الفهم المفاجئ هو بصمة الاستبصار." }
+  },
+  {
+    tag: "خطوات الاستبصار",
+    title: "6 و 7. استبصار الحل واكتشاف العلاقات",
+    story: "اللحظة السحرية (يوريكا!)؛ حيث تسقط كل التفاصيل التافهة وتبرز العلاقة الجوهرية التي تحل المشكلة.",
+    content: "6. فكرة الوصول للحل النهائي تأتي بشكل ظاهر ومفاجئ (هذه هي الاستبصار). 7. القدرة على اكتشاف 'العلاقات الهامة' في الموقف وإهمال التشتيت وما عداها من الأمور الهامشية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-lightbulb"></i></div><div style="font-weight:900; color:var(--c-indigo)">فهم فجائي للحل 💡 ⬅️ التركيز على العلاقات الجوهرية فقط</div>`,
+    quiz: { q: "أهم ما يميز التعلم بالاستبصار في مراحله النهائية هو القدرة على:", opts: ["اكتشاف العلاقات الهامة في الموقف وإهمال التشتيت", "البكاء والاستسلام"], ans: 0, fb: "بالضبط! عزل الضوضاء ورؤية الجوهر هو الحل." }
+  },
+  {
+    tag: "خصائص الاستبصار",
+    title: "1. الاستعداد العقلي (الذكاء)",
+    story: "المسائل المعقدة تتطلب عقولاً ناضجة؛ الاستبصار يتوقف عند حدود قدراتك الذهنية.",
+    content: "خصائص التعلم بالاستبصار: أولاً، يتوقف التعلم على 'المستوى العقلي' للفرد، وعلى مدى ما عنده من استعداد عقلي يمكنه من إدراك وتمييز العلاقات الموجودة في الموقف.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-head-side-virus"></i></div><div style="font-weight:900; color:var(--c-indigo)">الذكاء والمستوى العقلي ⬅️ يحددان قدرتك على الاستبصار</div>`,
+    quiz: { q: "التعلم بالاستبصار يتأثر بشدة بـ:", opts: ["المستوى العقلي للطفل أو الفرد (الذكاء)", "لون ملابس الفرد"], ans: 0, fb: "نعم، الذكاء هو المحرك الأساسي لإدراك العلاقات المعقدة." }
+  },
+  {
+    tag: "خصائص الاستبصار",
+    title: "2. النضج والخبرة السابقة",
+    story: "نحن نبني الحلول الجديدة باستخدام أحجار تجاربنا القديمة؛ الخبرة تمنحك سرعة البديهة.",
+    content: "ثانياً، يتوقف النجاح في الاستبصار على وجود 'نضج' وعمر مناسب، بالإضافة إلى توفر 'الخبرات السابقة'. يجب أن يربط الفرد بين خبراته الماضية في حياته وبين الموقف الجديد الذي يواجهه.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-cubes-stacked"></i></div><div style="font-weight:900; color:var(--c-indigo)">نضج عمري ➕ خبرات سابقة = قدرة على حل الجديد</div>`,
+    quiz: { q: "هل الخبرة السابقة تلعب دوراً في التعلم بالاستبصار؟", opts: ["نعم، الربط بين الخبرة الماضية والموقف الجديد أساسي للحل", "لا، الاستبصار لا يعتمد على الماضي أبداً"], ans: 0, fb: "صحيح! الخبرة هي المكتبة التي نستقي منها الإلهام." }
+  },
+  {
+    tag: "خصائص الاستبصار",
+    title: "3. تركيب المجال الإدراكي",
+    story: "كيف ترتب الأشياء حولك يحدد سرعة فهمك لها؛ العشوائية تقتل الاستبصار، والتنظيم يخلقه.",
+    content: "ثالثاً، يتوقف التعلم على عوامل تركيب 'المجال الإدراكي'. أي كيفية تنظيم عناصر المشكلة أمام الفرد، وقدرته على لفت 'الانتباه' إلى الأشياء الجوهرية دون غيرها.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-sitemap"></i></div><div style="font-weight:900; color:var(--c-indigo)">تنظيم وتوضيح عناصر المشكلة ⬅️ يسهل الفهم والانتباه</div>`,
+    quiz: { q: "تركيب المجال الإدراكي يعني:", opts: ["كيفية ترتيب وتنظيم عناصر المشكلة أمام الفرد وتوجيه انتباهه", "صناعة أدوات خشبية"], ans: 0, fb: "نعم، وضوح المشكلة بيئياً يسهل استيعابها عقلياً." }
+  },
+  {
+    tag: "خصائص الاستبصار",
+    title: "4. استكشاف ثم حل مفاجئ",
+    story: "تبدو هادئاً تراقب، ثم تنطلق فجأة كالرصاصة نحو الحل بلا تردد أو محاولات حمقاء.",
+    content: "رابعاً، يسبق التعلم بالاستبصار 'فترة استكشافية' نلاحظ فيها الحيرة والروية. ولكن المحاولة الحاسمة تتميز بالتدقيق والبراعة، والانتقال للحل يكون مفاجئاً بعد إدراك العلاقات.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-binoculars"></i></div><div style="font-weight:900; color:var(--c-indigo)">استكشاف هادئ ومراقبة ⬅️ انتقال فجائي لحل دقيق</div>`,
+    quiz: { q: "المحاولة الحاسمة للحل في الاستبصار تتميز بـ:", opts: ["التدقيق والبراعة والانتقال الفجائي", "البطء الشديد والتردد"], ans: 0, fb: "أحسنت! فور الفهم، يتم التنفيذ بحسم." }
+  },
+  {
+    tag: "خصائص الاستبصار",
+    title: "5. سهولة تكرار المحاولة الناجحة",
+    story: "إذا فهمت سر اللعبة مرة واحدة، فلن تخطئ أبداً؛ التكرار يصبح لعب أطفال.",
+    content: "خامساً، إذا حدث الاستبصار، يستطيع الفرد 'تكرار' المحاولة الناجحة بنفس الطريقة وبسهولة وسرعة بالغة، ولا يستدعي ذلك كثرة المحاولات أو تكراراً طويلاً لتثبيتها (على عكس المحاولة والخطأ).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-rotate-left"></i></div><div style="font-weight:900; color:var(--c-indigo)">فهم حقيقي ⬅️ تكرار فوري وسهل بلا حاجة للتدريب المرهق</div>`,
+    quiz: { q: "هل يحتاج التعلم بالاستبصار إلى تكرار طويل وممل لتثبيته؟", opts: ["لا، يمكن تكرار الحل السليم بسهولة وفوراً لأنه بُني على الفهم", "نعم، يحتاج مئات المحاولات"], ans: 0, fb: "صحيح! الفهم يختصر آلاف المحاولات." }
+  },
+  {
+    tag: "خصائص الاستبصار",
+    title: "6. انتقال أثر التعلم",
+    story: "ما تعلمته اليوم في إصلاح سيارتك، قد يلهمك غداً في إصلاح ثلاجتك؛ الاستبصار يمنحك المرونة.",
+    content: "سادساً، التعلم بالاستبصار يتبعه عادة 'زيادة في القدرة' على حل المشكلات الجديدة المتشابهة. أي أن الفهم العميق يسهل (انتقال أثر التدريب) إلى مواقف حياتية وعملية أخرى.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-truck-fast"></i></div><div style="font-weight:900; color:var(--c-indigo)">استبصار اليوم ⬅️ يسهل حل مشكلات متشابهة غداً</div>`,
+    quiz: { q: "التعلم بالاستبصار يؤدي عادة إلى:", opts: ["انتقال أثر التعلم ورفع القدرة على حل المشكلات الجديدة المتشابهة", "نسيان المعلومات القديمة"], ans: 0, fb: "نعم، هذا ما يسمى بتعميم الخبرة الإيجابية." }
+  },
+  {
+    tag: "معوقات الاستبصار",
+    title: "عوامل تعوق التعلم بالاستبصار (1 و 2)",
+    story: "لا تطلب من طفل حل معادلة رياضية جامعية؛ الصعوبة المفرطة وغياب الدافع يجهضان أي استبصار.",
+    content: "يعوق الاستبصار: 1. تعقد الموقف وصعوبة المشكلة بحيث تكون 'فوق مستوى الفرد' أو إدراكه (لذا يقل الاستبصار في الأطفال والحيوانات الدنيا أو ضعاف الذكاء). 2. عدم وجود دافع قوي يركز انتباه الحيوان/الفرد للوصول للحل.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-lock"></i></div><div style="font-weight:900; color:var(--c-danger)">تعقيد فوق القدرة + غياب الدافع = فشل الاستبصار</div>`,
+    quiz: { q: "لماذا يقل التعلم بالاستبصار عند صغار الأطفال وضعاف الذكاء؟", opts: ["لأن المشكلات غالباً تكون أطول وأعقد من مستوى إدراكهم", "لأنهم أسرع في الاستبصار"], ans: 0, fb: "صحيح! الاستبصار يتطلب توازناً بين المشكلة والقدرة العقلية." }
+  },
+  {
+    tag: "معوقات الاستبصار",
+    title: "عوامل تعوق التعلم بالاستبصار (3 و 4)",
+    story: "تخيل البحث عن إبرة في كومة قش؛ كثرة التفاصيل تشتت العقل المحدود الخبرة.",
+    content: "3. تشتت الانتباه الذي ينتج من زيادة أجزاء الموقف وعناصره لدرجة تزيد على 'مدى الانتباه' لدى المتعلم؛ مما يبطئ التعلم. 4. قلة 'الخبرة السابقة' بمواقف من نفس نوع المشكلة المراد حلها.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-head-side-cough"></i></div><div style="font-weight:900; color:var(--c-danger)">تفاصيل مشتتة وكثيرة + غياب الخبرة = ضياع الفهم</div>`,
+    quiz: { q: "زيادة أجزاء وعناصر الموقف التعليمي بشكل مبالغ فيه تؤدي إلى:", opts: ["تشتت الانتباه وبطء في الوصول للاستبصار", "سرعة خارقة في التعلم"], ans: 0, fb: "أحسنت! الفوضى البيئية تعيق التنظيم العقلي." }
+  },
+  {
+    tag: "معوقات الاستبصار",
+    title: "عوامل تعوق التعلم بالاستبصار (5 و 6)",
+    story: "التعصب لرأي واحد يمنعك من رؤية الحل؛ العقل المرن يعيد ترتيب المشهد من زوايا متعددة.",
+    content: "5. عدم القدرة على إدراك الموقف كـ 'كل' أو وحدة متكاملة (التركيز على جزء واحد). 6. عدم القدرة على إعادة ترتيب 'المجال الإدراكي' والنظر إليه من (زوايا مختلفة) لكسر الجمود الفكري.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-eye-slash"></i></div><div style="font-weight:900; color:var(--c-danger)">رؤية قاصرة للكل + جمود في الزوايا الإدراكية = فشل</div>`,
+    quiz: { q: "حتى ينجح الاستبصار، يجب أن ينظر المتعلم للمشكلة من:", opts: ["زوايا مختلفة ويعيد ترتيب المجال الإدراكي بمرونة", "زاوية واحدة فقط باستمرار"], ans: 0, fb: "نعم، المرونة الإدراكية وتعدد الزوايا مفتاح الحلول المبتكرة." }
+  },
+  {
+    tag: "تطبيقات تربوية",
+    title: "1. الطريقة الكلية في القراءة والتهجئة",
+    story: "الطفل يفهم كلمة 'ماما' كصورة كاملة ومعنى دافئ، قبل أن يتعلم تهجئة حروفها الجافة المقطعة.",
+    content: "استفادت التربية من الجشطالت في تعليم القراءة للصغار: يُفضل اتباع (الطريقة الكلية) بالبدء بتعليم الجمل، ثم الكلمات، ثم الحروف (بدلاً من الطريقة الجزئية التي تبدأ بالحروف المقطعة). الجملة والكلمة تحمل 'معنى كلي' يسهل على الطفل إدراكه.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-book-open-reader"></i></div><div style="font-weight:900; color:var(--c-indigo)">الطريقة الكلية (الكلمة ⬅️ الحرف) أثبتت تفوقها التعليمي</div>`,
+    quiz: { q: "كيف نطبق الجشطالت في تعليم القراءة للمبتدئين؟", opts: ["باستخدام الطريقة الكلية (البدء بالكلمات والجمل ذات المعنى قبل الحروف)", "بالبدء بتدريس الحروف المجردة المنفصلة أولاً"], ans: 0, fb: "صحيح! المعنى الكلي يسبق التجريد الجزئي." }
+  },
+  {
+    tag: "تطبيقات تربوية",
+    title: "2. الرياضيات، الهندسة والمحاضرات",
+    story: "لا تبدأ بشرح تفاصيل دقيقة ومعقدة قبل أن تعطي طلابك 'خريطة شاملة' للوجهة التي تسيرون إليها.",
+    content: "في حل المسائل والتفكير الهندسي، تفيد النظرية بحصر 'المجال الكلي للمشكلة' والنظر إليها دفعة واحدة. كذلك في المحاضرات، يجب (البدء بتوضيح النظرة العامة) والمحاور الرئيسية، ثم الانتقال لشرح الأجزاء والتفاصيل بداخل هذا الإطار الكلي.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div style="font-weight:900; color:var(--c-indigo)">الهيكل العام للمحاضرة أولاً ⬅️ ثم التفاصيل والأجزاء</div>`,
+    quiz: { q: "القاعدة الجشطالتية في تقديم أي محاضرة أو درس جديد هي:", opts: ["إعطاء النظرة الكلية والهيكل العام قبل الغوص في التفاصيل الجزئية", "الدخول في التفاصيل الدقيقة مباشرة"], ans: 0, fb: "بالضبط! الإطار الكلي ينظم استيعاب التفاصيل." }
+  },
+  {
+    tag: "تطبيقات تربوية",
+    title: "3. التعبير الفني والإنتاج الإبداعي",
+    story: "الرسام الماهر لا يبدأ برسم رمش العين بدقة؛ بل يخطط الهيكل العام للوحة (السكتش) أولاً ثم يضيف التفاصيل.",
+    content: "في التعبير والتقدير الفني، 'الكل يسبق الجزء'. الفنان يبدأ بوضع (رسم كروكي عام) ليحدد التكوين الكلي للوحة والتوازن بين العناصر، ثم يشرع في توضيح الأجزاء ببطء. لو بدأ برسم جزء دقيق وعزله لفشل في تحقيق التوازن الفني.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-palette"></i></div><div style="font-weight:900; color:var(--c-indigo)">رسم كروكي للتكوين الكلي ⬅️ ثم تفصيل الأجزاء داخله</div>`,
+    quiz: { q: "في التعبير الفني (كالرسم)، يُنصح بناءً على الجشطالت بـ:", opts: ["البدء بتخطيط كروكي عام للوحة لتحقيق التوازن قبل رسم الأجزاء", "البدء برسم أصغر جزء بدقة ثم الانتقال لغيره"], ans: 0, fb: "نعم، النظرة الكلية تضمن تناسق وتوازن العمل الفني." }
+  },
+  {
+    tag: "الخاتمة",
+    title: "أكملت الدرس الثاني بنجاح!",
+    story: "لقد انتقلت من التخبط العشوائي إلى النظرة الكلية الثاقبة.. أنت الآن جاهز لتطبيق الاستبصار في حياتك المهنية.",
+    content: "استعرضنا 39 شريحة مفصلة غطت نظرية التعلم بالاستبصار (الجشطالت) دون أي اختصار: من نقد ثورنديك، لمفهوم المجال والإدراك، وتجارب كوهلر، والخطوات والخصائص والمعوقات، وصولاً لأهم 3 تطبيقات تربوية في القراءة والرياضيات والفنون.",
+    visual: `<div class="v-icon" style="color:var(--c-accent)"><i class="fa-solid fa-trophy"></i></div><div style="font-weight:900; color:var(--c-indigo)">مرحى! لقد أتقنت نظرية الجشطالت باقتدار</div>`,
+    quiz: { q: "هل النظرة الكلية (الجشطالت) مفيدة في تنظيم الدروس وحل المشكلات المهنية؟", opts: ["نعم، لأنها توفر الإطار الكلي الذي يُسهل الفهم والاستبصار", "لا، ليس لها أي أهمية"], ans: 0, fb: "رائع جداً! تطبيق الرؤية الشاملة هو قمة الذكاء الإنساني. بالتوفيق!" }
+  }
+];
+
+// --- لۆژیکی سەرەکی بەرنامەکە (App Logic) ---
+let currentSlide = 0;
+let xp = 0;
+const total = SLIDE_DATA.length;
+const answered = new Set();
+
+function initApp() {
+  const container = document.getElementById('main-container');
+  SLIDE_DATA.forEach((slide, index) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'slide' + (index === 0 ? ' active' : '');
+    slideDiv.id = 'slide-' + index;
+    
+    slideDiv.innerHTML = `
+      <div class="card">
+        <div class="tag">${slide.tag}</div>
+        <h2 style="font-size: clamp(1.5rem, 4vw, 2.3rem); color: var(--c-navy); margin-bottom: 25px; font-weight: 900; line-height:1.2;">${slide.title}</h2>
+        
+        <div class="story-box">
+          <i class="fa-solid fa-quote-right"></i>
+          <p>${slide.story}</p>
+        </div>
+
+        <div class="content-body">
+          ${slide.content}
+        </div>
+
+        <div class="visual-box">
+          ${slide.visual}
+        </div>
+
+        <div class="activity-box" id="actBox-${index}">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+             <div style="width: 45px; height: 45px; background: var(--c-sky); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
+                <i class="fa-solid fa-bolt"></i>
+             </div>
+             <h3 style="font-weight: 900; color: var(--c-navy); margin:0; font-size: 1.4rem;">تحدي الاستيعاب</h3>
+          </div>
+          
+          <p style="margin-bottom: 20px; font-weight: 800; font-size: 1.2rem; color: var(--c-navy); line-height: 1.5;">${slide.quiz.q}</p>
+          
+          <div style="display: grid; gap: 12px;">
+            <button class="act-btn" onclick="checkAns(${index}, 0, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[0]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-0"></i>
+            </button>
+            <button class="act-btn" onclick="checkAns(${index}, 1, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[1]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-1"></i>
+            </button>
+          </div>
+          <div class="feedback-msg" id="fb-${index}"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(slideDiv);
+  });
+  updateUI();
+}
+
+function checkAns(sIdx, chosen, correct, btn) {
+  const box = document.getElementById(`actBox-${sIdx}`);
+  if (answered.has(sIdx)) return;
+  answered.add(sIdx);
+
+  const fb = document.getElementById(`fb-${sIdx}`);
+  const buttons = box.querySelectorAll('.act-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    btn.querySelector('i').className = "fa-solid fa-circle-check";
+    fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#dcfce7";
+    fb.style.color = "#166534";
+    fb.style.display = "block";
+    xp += 100;
+    showToast("+100 XP! إتقان مذهل");
+    
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#0284c7', '#4f46e5', '#10b981']
+    });
+  } else {
+    btn.classList.add('wrong');
+    btn.querySelector('i').className = "fa-solid fa-circle-xmark";
+    fb.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#fee2e2";
+    fb.style.color = "#991b1b";
+    fb.style.display = "block";
+    buttons[correct].classList.add('correct');
+    buttons[correct].querySelector('i').className = "fa-solid fa-circle-check";
+  }
+  updateStats();
+}
+
+function move(dir) {
+  const slides = document.querySelectorAll('.slide');
+  if (currentSlide + dir < 0 || currentSlide + dir >= total) return;
+  
+  slides[currentSlide].classList.remove('active');
+  currentSlide += dir;
+  slides[currentSlide].classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('counter').innerText = `${currentSlide + 1} / ${total}`;
+  document.getElementById('progress-bar').style.width = ((currentSlide + 1) / total * 100) + '%';
+  document.getElementById('btn-prev').disabled = currentSlide === 0;
+  document.getElementById('btn-next').disabled = currentSlide === total - 1;
+}
+
+function updateStats() {
+  document.getElementById('scoreDisplay').innerText = xp;
+  let level = "مستكشف";
+  if (xp >= 1000) level = "باحث تربوي";
+  if (xp >= 1800) level = "أخصائي نفسي";
+  if (xp >= 2600) level = "بروفيسور";
+  if (xp >= 3400) level = "أسطورة التعلم";
+  document.getElementById('levelDisplay').innerText = level;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = "block";
+  t.style.animation = "fadeInOut 2.5s forwards";
+  setTimeout(() => { t.style.display = "none"; }, 2500);
+}
+
+window.onload = initApp;
+</script>
+
+</body>
+</html>

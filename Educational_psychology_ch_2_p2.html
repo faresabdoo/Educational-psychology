@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>علم النفس التربوي - منحنى التعلم (37 شريحة)</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Canvas Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+/* ==========================================================================
+   UI System - Oceanic Indigo High-Contrast (مطابق للنسخة الأصلية)
+   ========================================================================== */
+:root {
+  --c-sky: #0284c7; 
+  --c-indigo: #4f46e5;
+  --c-navy: #0f172a; 
+  --c-cyan-light: #e0f2fe; 
+  --c-accent: #f59e0b; 
+  --c-bg: #f8fafc; 
+  --c-surface: #ffffff;
+  --c-text-main: #0f172a; 
+  --c-text-muted: #475569; 
+  --c-success: #10b981;
+  --c-danger: #ef4444;
+  --c-border: #e2e8f0;
+  --font-main: 'Cairo', sans-serif;
+  --font-story: 'Tajawal', sans-serif;
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --r-xl: 24px;
+  --t-base: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--c-bg);
+  color: var(--c-text-main);
+  line-height: 1.8;
+  background-image: radial-gradient(var(--c-cyan-light) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+  overflow-x: hidden;
+}
+
+/* Progress Tracking */
+#progress-container { position: fixed; top: 0; left: 0; right: 0; height: 7px; background: var(--c-border); z-index: 1100; }
+#progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--c-sky), var(--c-indigo)); transition: width var(--t-base); }
+
+/* Header */
+header {
+  position: fixed; top: 7px; left: 0; right: 0; height: 65px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 25px; border-bottom: 1px solid var(--c-border); z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 900; color: var(--c-navy); font-size: 1.2rem; }
+.brand i { color: var(--c-sky); font-size: 1.5rem; }
+.stats { display: flex; align-items: center; gap: 10px; }
+.badge { background: var(--c-bg); border: 2.5px solid var(--c-border); padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+
+/* Main Container */
+main { padding: 100px 20px 130px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+.slide { display: none; width: 100%; max-width: 950px; animation: slideReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.slide.active { display: block; }
+@keyframes slideReveal { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Slide Components */
+.card { background: var(--c-surface); border-radius: var(--r-xl); padding: clamp(25px, 5vw, 45px); box-shadow: var(--shadow-lg); border: 1px solid rgba(2, 132, 199, 0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+.tag { display: inline-block; padding: 6px 18px; background: var(--c-cyan-light); color: var(--c-sky); border-radius: 50px; font-size: 0.85rem; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; border: 1.5px solid var(--c-sky); }
+
+.story-box { background: linear-gradient(to left, var(--c-bg), #f0f9ff); border-right: 6px solid var(--c-indigo); padding: 25px; border-radius: 16px; margin: 25px 0; display: flex; gap: 20px; align-items: flex-start; }
+.story-box i { font-size: 2.5rem; color: var(--c-indigo); opacity: 0.7; }
+.story-box p { font-family: var(--font-story); font-style: italic; margin: 0; font-size: 1.25rem; color: var(--c-navy); font-weight: 600; }
+
+.content-body { font-size: 1.25rem; font-weight: 700; color: var(--c-navy); margin-bottom: 30px; text-align: justify; border-right: 4px solid var(--c-cyan-light); padding-right: 20px; line-height: 1.8; }
+
+.visual-box { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px dashed var(--c-sky); border-radius: 20px; padding: 35px; margin: 30px 0; text-align: center; }
+.v-icon { font-size: 5rem; color: var(--c-sky); margin-bottom: 15px; }
+
+/* Interactive Activity */
+.activity-box { background: #ffffff; border: 3px solid var(--c-sky); border-radius: var(--r-xl); padding: 35px; margin-top: 25px; box-shadow: inset 0 0 20px rgba(2, 132, 199, 0.05); }
+.act-btn {
+  width: 100%; background: #ffffff; border: 2px solid var(--c-border); padding: 20px;
+  border-radius: 16px; cursor: pointer; font-family: var(--font-main); font-size: 1.15rem;
+  font-weight: 800; text-align: right; margin-bottom: 15px; transition: all 0.25s ease;
+  display: flex; justify-content: space-between; align-items: center; color: var(--c-navy);
+}
+.act-btn:hover:not(:disabled) { border-color: var(--c-indigo); background: #f5f3ff; transform: translateX(-10px); }
+.act-btn.correct { background: #dcfce7; border-color: var(--c-success); color: #166534; }
+.act-btn.wrong { background: #fee2e2; border-color: var(--c-danger); color: #991b1b; }
+
+.feedback-msg { padding: 20px; border-radius: 12px; margin-top: 20px; font-weight: 900; font-size: 1.15rem; display: none; border: 1px solid rgba(0,0,0,0.1); }
+
+/* Footer Controls */
+footer {
+  position: fixed; bottom: 0; left: 0; right: 0; padding: 18px 40px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--c-border);
+  display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+}
+.btn { padding: 14px 35px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: var(--font-main); font-size: 1.05rem; }
+.btn-primary { background: linear-gradient(135deg, var(--c-indigo), var(--c-sky)); color: white; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3); }
+.btn-outline { background: white; color: var(--c-text-muted); border: 2.5px solid var(--c-border); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Stats Display */
+.toast { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: var(--c-navy); color: white; padding: 15px 30px; border-radius: 50px; z-index: 2000; display: none; font-weight: 800; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  20% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-container"><div id="progress-bar"></div></div>
+
+<header>
+  <div class="brand"><i class="fa-solid fa-chart-line"></i> الفصل الثاني: منحنى التعلم</div>
+  <div class="stats">
+    <div class="badge"><i class="fa-solid fa-bolt" style="color:var(--c-accent)"></i> <span id="scoreDisplay">0</span> XP</div>
+    <div class="badge" style="color:var(--c-indigo);"><i class="fa-solid fa-award"></i> <span id="levelDisplay">مستكشف</span></div>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<main id="main-container"></main>
+
+<footer>
+  <button class="btn btn-outline" id="btn-prev" onclick="move(-1)">السابق</button>
+  <div id="counter" style="font-weight:900; color:var(--c-navy); font-size: 1.2rem;">1 / 37</div>
+  <button class="btn btn-primary" id="btn-next" onclick="move(1)">التالي</button>
+</footer>
+
+<script>
+/* ==========================================================================
+   DATASET: 37 شريحة كاملة للدرس (منحنى التعلم) بدون حذف أو اختصار
+   ========================================================================== */
+const SLIDE_DATA = [
+  {
+    tag: "المقدمة",
+    title: "مفهوم منحنى التعلم (Learning Curve)",
+    story: "تخيل أن مسيرتك التعليمية هي رحلة صعود جبل، كيف يمكنك رسم مسار تقدمك؟ العلم قدم لنا أداة بصرية دقيقة لذلك.",
+    content: "يقوم الباحثون بمحاولات عديدة في تجربة التعلم ونحصل على مقاييس للتعلم أو التذكر. هذه المقاييس يمكن التعبير عنها في صورة رسم بياني يسمى 'منحنى التعلم'.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-chart-area"></i></div><div style="font-weight:900; color:var(--c-indigo)">ترجمة الأداء إلى صورة بصرية</div>`,
+    quiz: { q: "ما هو الهدف من رسم 'منحنى التعلم'؟", opts: ["التعبير عن مقاييس التعلم والتذكر في صورة رسم بياني", "تزيين الكتب المدرسية فقط"], ans: 0, fb: "أحسنت! الرسم البياني يسهل قراءة وتتبع الأداء بوضوح." }
+  },
+  {
+    tag: "الهندسة الرياضية",
+    title: "العلاقة الوظيفية في المنحنى",
+    story: "التعلم ليس مجرد أرقام عشوائية، بل هو معادلة دقيقة تربط بين ما تبذله من جهد وبين ما تحصده من نتائج.",
+    content: "منحنى التعلم هو عبارة عن علاقة وظيفية بين متغير مستقل ومتغير تابع؛ حيث تتأثر نتائج أحدهما بمقدار التغير في الآخر طوال فترة التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-link"></i></div><div style="font-weight:900; color:var(--c-indigo)">متغير مستقل ↔️ متغير تابع</div>`,
+    quiz: { q: "منحنى التعلم يعبر أساساً عن علاقة وظيفية بين:", opts: ["متغير مستقل ومتغير تابع", "طول الطالب ووزنه"], ans: 0, fb: "صحيح! هذه هي القاعدة الإحصائية لبناء المنحنى." }
+  },
+  {
+    tag: "المحاور البيانية",
+    title: "المحور الرأسي (Ordinate)",
+    story: "الخط العمودي في الرسم البياني يخبرك بمدى نجاحك أو إخفاقك؛ إنه المقياس الحقيقي لنتائج تجربتك.",
+    content: "يعبر المحور الرأسي (Ordinate) عادة عن 'المتغير التابع'. ومن أمثلة المتغيرات التابعة: مقاييس التعلم التي ذكرت سابقاً (كعدد الإجابات الصحيحة أو الزمن المستغرق).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrows-up-down"></i></div><div style="font-weight:900; color:var(--c-indigo)">المحور الرأسي = المتغير التابع (النتيجة)</div>`,
+    quiz: { q: "ما الذي يمثله عادة المحور الرأسي في منحنى التعلم؟", opts: ["المتغير التابع (مقاييس التعلم كالدرجات)", "عدد المحاولات أو الممارسة"], ans: 0, fb: "نعم، المحور الرأسي يعكس النتيجة أو الاستجابة المتغيرة." }
+  },
+  {
+    tag: "المحاور البيانية",
+    title: "المحور الأفقي (Abscissa)",
+    story: "كلما سار الزمن وتكررت المحاولات، امتد الخط الأفقي ليحكي قصة صبرك واستمرارك.",
+    content: "يعبر المحور الأفقي (Abscissa) عادة عن 'المتغير المستقل'. ومن أمثلة المتغيرات المستقلة: الممارسة، ومقدارها (كمية المحاولات)، وعادة ما يتمثل في عدد المحاولات التي تحدث في التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrows-left-right"></i></div><div style="font-weight:900; color:var(--c-indigo)">المحور الأفقي = المتغير المستقل (الممارسة/الزمن)</div>`,
+    quiz: { q: "المحور الأفقي مخصص عادة لتمثيل:", opts: ["النتيجة النهائية للاختبار", "مقدار الممارسة أو عدد المحاولات (المتغير المستقل)"], ans: 1, fb: "بالضبط! الأفقي يقيس الجهد أو الزمن المبذول." }
+  },
+  {
+    tag: "بناء المنحنى",
+    title: "تدريج المحور الرأسي (التابع)",
+    story: "الدقة تبدأ من كيفية اختيار وحدات القياس؛ فالمقياس الدقيق يكشف أدق تفاصيل التقدم أو التراجع.",
+    content: "في إعداد منحنى التعلم، يُمثل المقياس التابع على المحور الرأسي بوحدات ملائمة لمدى القيم التي يعبر عنها هذا المقياس. ويجب أن تكون وحدات المقياس مدرجة من أدنى درجة إلى أعلى درجة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ruler-vertical"></i></div><div style="font-weight:900; color:var(--c-indigo)">من الأدنى ⬇️ إلى الأعلى ⬆️ بوحدات متساوية</div>`,
+    quiz: { q: "كيف يجب ترتيب القيم على المحور الرأسي؟", opts: ["من أعلى درجة إلى أدنى درجة", "من أدنى درجة إلى أعلى درجة تدريجياً"], ans: 1, fb: "صحيح! التدريج المنطقي يبدأ من الأسفل للأعلى ليعكس النمو." }
+  },
+  {
+    tag: "بناء المنحنى",
+    title: "تحديد الفئات والمقاييس",
+    story: "لا توجد قاعدة واحدة تناسب الجميع؛ طبيعة المهمة هي التي تفرض شكل تدريج الرسم البياني.",
+    content: "تحديد فئات قيم المتغير التابع يتوقف على: نوع المقياس، عدد وحداته، ومداه. وتُدرج الفئات مع مراعاة أن تكون الصورة العامة للمنحنى ملائمة ومقبولة بصرياً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-layer-group"></i></div><div style="font-weight:900; color:var(--c-indigo)">التدريج يتوافق مع طبيعة المقياس ومداه</div>`,
+    quiz: { q: "تحديد قيم المتغير التابع يعتمد على:", opts: ["رغبة الباحث الشخصية", "نوع المقياس وعدد وحداته ومداه"], ans: 1, fb: "نعم، الدقة تتطلب أن يناسب التدريج طبيعة البيانات." }
+  },
+  {
+    tag: "بناء المنحنى",
+    title: "تدريج المحور الأفقي (المستقل)",
+    story: "المحاولات كخطوات السائر، يجب أن تكون محسوبة بمسافات متساوية لتعطينا قراءة صحيحة لسرعته.",
+    content: "أما المتغير المستقل (عدد المحاولات) فيُشار إليه بأرقام على طول خط المحور الأفقي، وبمسافات متساوية ومدرجة من اليسار إلى اليمين. تمثل كل نقطة محاولة وتكون بمسافات متساوية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ruler-horizontal"></i></div><div style="font-weight:900; color:var(--c-indigo)">محاولات مدرجة من اليسار ⬅️ إلى اليمين ➡️</div>`,
+    quiz: { q: "المسافات بين المحاولات على المحور الأفقي يجب أن تكون:", opts: ["عشوائية وغير منتظمة", "متساوية ومدرجة من اليسار لليمين"], ans: 1, fb: "صحيح! التساوي يضمن دقة قراءة تطور المنحنى." }
+  },
+  {
+    tag: "قراءة المنحنى",
+    title: "توصيل النقاط وإظهار التقدم",
+    story: "كل نقطة في الرسم البياني هي قصة كفاح، وعندما نربطها معاً، نرى الصورة الكبرى لنجاح الفرد.",
+    content: "كل نقطة من خط المحور الأفقي تقابلها نقطة على المحور الرأسي تمثل درجة التعلم. تُوصل هذه النقاط بخطوط مستقيمة، لتدل من مجرد النظر على مدى التقدم الذي يحرزه المفحوص من محاولة لأخرى.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-chart-line"></i></div><div style="font-weight:900; color:var(--c-indigo)">النقاط ⬅️ الخطوط المستقيمة ⬅️ قراءة التقدم البصري</div>`,
+    quiz: { q: "الفائدة من توصيل النقاط في المنحنى بخطوط هي:", opts: ["تسهيل معرفة مدى التقدم من مجرد النظر", "جعل الرسم معقداً وصعب الفهم"], ans: 0, fb: "بالضبط! الغاية هي التبسيط البصري وقراءة الاتجاه." }
+  },
+  {
+    tag: "مثال عملي",
+    title: "تجربة استدعاء الكلمات (جدول 1)",
+    story: "دعونا نأخذ مثالاً واقعياً: طُلب من طالب حفظ كلمات جديدة، فكيف تطور أداؤه عبر المحاولات؟",
+    content: "لدينا نتيجة تجربة معملية طُلب فيها من المفحوص تعلم (10 كلمات)، ويوضح الجدول (1) الكلمات التي استدعاها المفحوص استدعاءً كاملاً عبر 15 محاولة متتابعة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-table-list"></i></div><div style="font-weight:900; color:var(--c-indigo)">التجربة: حفظ 10 كلمات عبر 15 محاولة</div>`,
+    quiz: { q: "في التجربة المذكورة، ما هو المتغير المستقل؟", opts: ["عدد الكلمات التي حفظها (من 0 لـ 10)", "رقم المحاولة (من 1 لـ 15)"], ans: 1, fb: "أحسنت! المحاولات هي الجهد المبذول (المستقل)." }
+  },
+  {
+    tag: "تحليل البيانات",
+    title: "نتائج التجربة (قراءة الأرقام)",
+    story: "البدايات دائماً بطيئة؛ بدأ الطالب بكلمة واحدة، وبالتكرار والصبر وصل للعلامة الكاملة.",
+    content: "تظهر النتائج كالتالي عبر 15 محاولة: بدأ الطالب بحفظ كلمة واحدة في المحاولة 1 و2. في المحاولة 5 حفظ كلمتين، وفي المحاولة 9 حفظ 5 كلمات، حتى وصل لـ 10 كلمات كاملة في المحاولات الأخيرة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrow-trend-up"></i></div><div style="font-weight:900; color:var(--c-indigo)">المحاولة 1 ⬅️ (كلمة) | المحاولة 15 ⬅️ (10 كلمات)</div>`,
+    quiz: { q: "ماذا نلاحظ على أداء الطالب بمرور المحاولات؟", opts: ["تراجع ملحوظ", "تحسن وارتفاع في عدد الكلمات المسترجعة"], ans: 1, fb: "نعم، التكرار أدى لزيادة عدد الكلمات المحفوظة." }
+  },
+  {
+    tag: "المنحنيات الهابطة",
+    title: "منحنى التعلم الهابط (Inverted Curve)",
+    story: "ليس كل صعود نجاحاً، وليس كل هبوط فشلاً. في عالم الأخطاء، الهبوط هو أعظم انتصار.",
+    content: "إذا كان مقياس التعلم هو درجة 'الأخطاء' أو درجات 'الزمن المستغرق'، فإن المنحنى يكون هابطاً (Inverted Curve) أو تناقصياً؛ فكلما قلت الأخطاء وزمن الإنجاز دلّ ذلك على حدوث التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrow-trend-down"></i></div><div style="font-weight:900; color:var(--c-indigo)">هبوط الأخطاء 📉 = نجاح التعلم 🥇</div>`,
+    quiz: { q: "متى يكون المنحنى 'هابطاً' ويدل في نفس الوقت على 'نجاح' التعلم؟", opts: ["عندما نقيس عدد الإجابات الصحيحة", "عندما نقيس عدد الأخطاء أو الزمن المستغرق"], ans: 1, fb: "صحيح! تناقص الأخطاء والوقت يعني إتقان المهارة." }
+  },
+  {
+    tag: "أنواع المنحنيات",
+    title: "المنحنى السيني (Sigmoid Curve)",
+    story: "بعض القدرات كالقوة والمبادرة تحتاج لوقت لتنطلق، ثم تتسارع، ثم تستقر في القمة.",
+    content: "يكون المنحنى السيني (Sigmoid) عادة عندما يكون مقياس التعلم هو 'سعة أو قوة الاستجابة' أو 'تكرارها (احتمال حدوثها)'، أو مقاييس المبادرة التحليلية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-bezier-curve"></i></div><div style="font-weight:900; color:var(--c-indigo)">المنحنى السيني (S) = يقيس القوة وسعة الاستجابة</div>`,
+    quiz: { q: "المنحنى السيني (Sigmoid) يظهر عادة عند قياس:", opts: ["عدد الأخطاء المرتكبة", "سعة (قوة) الاستجابة واحتمال حدوثها"], ans: 1, fb: "بالضبط! هذا الشكل يميز التطور التراكمي لقوة الأداء." }
+  },
+  {
+    tag: "مقاييس إضافية",
+    title: "قياس الحفظ والتذكر",
+    story: "كيف نقيس ما تبقى في العقل؟ التذكر والتعرف هما أدواتنا للغوص في الذاكرة.",
+    content: "يستخدم الباحثون طرق قياس أخرى مثل قياس الحفظ أو التذكر (باستخدام التعرف، أو إعادة الترتيب). منحنى التعلم الواحد قد لا يشملها كلها، وتتنوع المنحنيات باختلاف طبيعة العمل ومقاييس التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-brain"></i></div><div style="font-weight:900; color:var(--c-indigo)">التعرف 👁️ + إعادة الترتيب 🧩 = قياس التذكر</div>`,
+    quiz: { q: "هل يوجد شكل 'واحد فقط' وثابت لجميع منحنيات التعلم؟", opts: ["لا، تتنوع باختلاف العمل والمقاييس المستخدمة", "نعم، كل المنحنيات متطابقة تماماً"], ans: 0, fb: "نعم، التنوع هو السمة الأساسية لاختلاف طبيعة المهارات." }
+  },
+  {
+    tag: "الملاحظات الكبرى",
+    title: "الظاهرة الأولى: التحسن في بداية المنحنى",
+    story: "البدايات دائماً تحمل بشائر التغيير؛ أولى خطوات التعلم تظهر تحسناً ملحوظاً نلتقطه بوضوح.",
+    content: "من الأمور الهامة التي يكشف عنها منحنى التعلم هو معدل 'التحسن' في الأداء، والتغيرات التي تطرأ على هذا المعدل. يظهر المنحنى في بدايته مدى التحسن الفعلي الذي يحرزه المفحوص.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div><div style="font-weight:900; color:var(--c-indigo)">مراقبة معدل التحسن والتغيرات المرافقة له</div>`,
+    quiz: { q: "من أهم الأمور التي يكشفها منحنى التعلم بمجرد النظر هي:", opts: ["تاريخ ميلاد الطالب", "معدل التحسن في الأداء والتغيرات التي تطرأ عليه"], ans: 1, fb: "صحيح! هذا هو الهدف الأساسي من رسم المنحنى." }
+  },
+  {
+    tag: "معدل التحسن",
+    title: "ثبات معدل التحسن (السرعة الصفرية)",
+    story: "تخيل أنك تتعلم بنفس المقدار الثابت كل يوم دون أي زيادة أو نقصان؛ هذا أقرب للخيال من الواقع.",
+    content: "إذا كان معدل التحسن ثابتاً (أي أن الزيادة في الكسب مقدارها ثابت في كل محاولة)، فإن منحنى التعلم يتخذ شكل 'الخط المستقيم' (منحنيات السرعة الصفرية)، وهذه حالة شاذة وليست القاعدة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ruler"></i></div><div style="font-weight:900; color:var(--c-indigo)">خط مستقيم = سرعة صفرية (تحسن ثابت وشاذ)</div>`,
+    quiz: { q: "المنحنى الذي يتخذ شكل خط مستقيم يعبر عن:", opts: ["ثبات معدل التحسن (السرعة الصفرية) وهو حالة شاذة", "توقف التعلم تماماً (فشل)"], ans: 0, fb: "أحسنت! الطبيعة البشرية متغيرة ولا تسير عادة بمعدل ثابت دقيق." }
+  },
+  {
+    tag: "منحنيات السرعة السلبية",
+    title: "منحنيات البداية السريعة (السرعة السلبية)",
+    story: "بعض المهارات تبدأ كالعاصفة بحماس منقطع النظير وإنجاز سريع، ثم تهدأ لتتقدم ببطء.",
+    content: "تنظر منحنيات التعلم عادة في البداية؛ فهناك 'منحنيات السرعة السلبية' (وتسمى منحنيات البداية السريعة). فيها يكون معدل الكسب والتحسن كبيراً في البداية، ثم يتناقص تدريجياً في المحاولات التالية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-rocket"></i></div><div style="font-weight:900; color:var(--c-indigo)">انطلاقة سريعة 🚀 ⬅️ ثم تباطؤ تدريجي 🐢</div>`,
+    quiz: { q: "في منحنى السرعة السلبية، يكون التحسن في البداية:", opts: ["سريعاً وكبيراً جداً", "بطيئاً جداً ثم يتسارع"], ans: 0, fb: "صحيح! الكسب يكون ضخماً في أولى المحاولات ثم يقل الزخم." }
+  },
+  {
+    tag: "أسباب السرعة السلبية",
+    title: "السبب 1: الانتقال الإيجابي لتعلم سابق",
+    story: "من يعرف ركوب الدراجة، سيتعلم قيادة الدراجة النارية أسرع؛ الخبرة السابقة هي وقود البدايات السريعة.",
+    content: "نحصل على منحنى سرعة سلبية حين يستفيد التلميذ من أثر التعلم السابق وينقله للتعلم الجديد (انتقال أثر التدريب الإيجابي). فهنا هو لا يبدأ التعلم من نقطة الصفر تماماً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-bridge"></i></div><div style="font-weight:900; color:var(--c-indigo)">خبرة سابقة ⬅️ انتقال إيجابي ⬅️ قفزة سريعة بالتعلم</div>`,
+    quiz: { q: "الانتقال الإيجابي للتعلم السابق يجعل البداية:", opts: ["بطيئة ومحبطة", "سريعة لأن الطالب لا يبدأ من الصفر"], ans: 1, fb: "نعم، المعرفة السابقة تختصر الكثير من الوقت والجهد المبدئي." }
+  },
+  {
+    tag: "أسباب السرعة السلبية",
+    title: "السبب 2: سهولة الأجزاء الأولى",
+    story: "الكتاب يبدأ بفصول سهلة ومشوقة؛ إنجاز السهل يعطي وهماً بسرعة التعلم الكلية.",
+    content: "قد ينظم العمل بحيث يتعلم المفحوص في البداية أجزاء أكثر سهولة ويسراً، ويؤدي هذا التنظيم إلى تحسن مبدئي سريع. ومع الانتقال للأجزاء الأصعب والأعقد، يتناقص معدل التحسن تدريجياً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-stairs"></i></div><div style="font-weight:900; color:var(--c-indigo)">بداية سهلة جداً ✅ ⬅️ ثم تعقيد يقلل السرعة 📉</div>`,
+    quiz: { q: "إذا كانت الأجزاء الأولى من المهمة سهلة جداً، فإن المنحنى سيكون:", opts: ["ذا سرعة سلبية (بداية سريعة ثم تباطؤ)", "ذا سرعة إيجابية (بداية بطيئة ثم تسارع)"], ans: 0, fb: "صحيح! السهولة تمنح سرعة مبدئية تتلاشى مع صعوبة القادم." }
+  },
+  {
+    tag: "أسباب السرعة السلبية",
+    title: "أسباب أخرى (3 و 4 و 5)",
+    story: "الحماس طاقة جبارة في البداية؛ واكتساب الصورة العامة للمهمة يعطي دفعة قوية للفهم.",
+    content: "3. اكتساب الصورة العامة للأداء الجديد مبكراً.<br>4. استخدام طرق عمل معينة تؤدي لتحسن مبدئي.<br>5. الحماس المبدئي الفائق للعمل الجديد (والذي قد يقل بمرور الوقت).<br>6. أن يكون المفحوص أكبر سناً أو أكثر ذكاءً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-fire"></i></div><div style="font-weight:900; color:var(--c-indigo)">فهم الصورة العامة + الحماس المبدئي = قفزة مبكرة</div>`,
+    quiz: { q: "هل لـ 'الحماس المبدئي' أثر في شكل منحنى التعلم؟", opts: ["لا، الحماس غير مهم", "نعم، يؤدي إلى بداية سريعة وقفزة في الأداء (سرعة سلبية)"], ans: 1, fb: "أحسنت! الحالة الانفعالية والحماس تدفع الأداء للأقصى مبكراً." }
+  },
+  {
+    tag: "منحنيات السرعة الإيجابية",
+    title: "منحنيات البداية البطيئة (السرعة الإيجابية)",
+    story: "التعلم كحفر بئر صخري؛ البداية شاقة ومتعبة وبطيئة، ثم يتدفق الماء بقوة متسارعة.",
+    content: "النوع الآخر هو 'منحنيات السرعة الإيجابية' وتسمى منحنيات البداية البطيئة. فيها يكون التقدم في المراحل الأولى بطيئاً، ثم يتزايد معدل الكسب والتحسن تدريجياً مع التقدم في محاولات التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-plane-departure"></i></div><div style="font-weight:900; color:var(--c-indigo)">إقلاع بطيء 🐢 ⬅️ ثم تسارع متزايد 🚀</div>`,
+    quiz: { q: "في منحنى السرعة الإيجابية، كيف يكون الأداء في البداية؟", opts: ["بطيئاً ثم يتسارع تدريجياً", "سريعاً ثم يتباطأ"], ans: 0, fb: "بالضبط! الصعوبة المبدئية تجعل الانطلاقة بطيئة." }
+  },
+  {
+    tag: "أسباب السرعة الإيجابية",
+    title: "الأسباب (1 و 2 و 3)",
+    story: "المهمة المعقدة أو التداخل مع عادات قديمة يربك البدايات ويجعلها بطيئة ومحبطة أحياناً.",
+    content: "يظهر هذا المنحنى في الحالات الآتية:<br>1. حين تأتي أصعب جوانب العمل في البداية.<br>2. في تعلم مادة صعبة أو لا معنى لها (كالمقاطع عديمة المعنى).<br>3. التداخل السلبي لتعلم سابق مع التعلم الجديد.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-hill-rockslide"></i></div><div style="font-weight:900; color:var(--c-indigo)">صعوبة البداية + تداخل سلبي = بطء مبدئي</div>`,
+    quiz: { q: "إذا تداخلت عادات قديمة بشكل 'سلبي' لتعيق تعلم مهارة جديدة، فسيظهر المنحنى كـ:", opts: ["سرعة إيجابية (بطء في البداية للتغلب على التداخل)", "خط مستقيم"], ans: 0, fb: "نعم، العقل يحتاج وقتاً لكسر العادة القديمة قبل تسريع التعلم." }
+  },
+  {
+    tag: "أسباب السرعة الإيجابية",
+    title: "الأسباب (4 و 5 و 6)",
+    story: "الصورة الذهنية تحتاج وقتاً لتتضح، وطرق العمل المبتدئة تأخذ وقتاً لتثمر عن نتائج كبيرة.",
+    content: "4. صعوبة تكوين صورة عامة للأداء، ومع الاستمرار تزيد السرعة.<br>5. اكتساب طرق عمل جديدة قد لا تزيد الإنتاج في البداية (رغم أهميتها لاحقاً).<br>6. أن يكون المفحوص أصغر سناً أو أقل ذكاءً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-puzzle-piece"></i></div><div style="font-weight:900; color:var(--c-indigo)">التركيب البطيء للخبرة ⬅️ يؤدي لتسارع الأداء لاحقاً</div>`,
+    quiz: { q: "كيف يؤثر صغر السن أو نقص الذكاء على المنحنى؟", opts: ["يؤدي لتسارع وهمي لا أصل له", "يؤدي لبداية بطيئة وصعوبة في فهم الصورة العامة (سرعة إيجابية)"], ans: 1, fb: "صحيح! الفهم المتأني يحتاج لمحاولات أكثر في البداية." }
+  },
+  {
+    tag: "مرحلة الاستقرار",
+    title: "ظاهرة هضبة التعلم (Plateau)",
+    story: "في رحلة التسلق، قد تجد أرضاً مسطحة تمشي عليها طويلاً دون صعود؛ هذه هي الهضبة التعليمية.",
+    content: "ظاهرة الهضبة هي مرحلة يطرأ فيها استقرار أو ركود على الأداء بالرغم من استمرار الممارسة. ويبقى مقياس التعلم ثابتاً دون تغير واضح في قيمته في عدد من المحاولات المتتابعة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-road"></i></div><div style="font-weight:900; color:var(--c-indigo)">استمرار الممارسة + عدم تحسن واضح = هضبة التعلم</div>`,
+    quiz: { q: "هضبة التعلم تعني:", opts: ["توقف الطالب عن الممارسة والتدريب نهائياً", "استقرار الأداء دون تحسن رغم استمرار الممارسة والتدريب"], ans: 1, fb: "أحسنت! الجهد مستمر لكن النتيجة متوقفة مؤقتاً." }
+  },
+  {
+    tag: "طبيعة الهضبة",
+    title: "هل الهضبة حتمية الحدوث؟",
+    story: "الهضبة ليست نهاية الطريق ولا قدراً محتوماً؛ هي مجرد توقف مؤقت يمكن تجاوزه بالتشخيص السليم.",
+    content: "تكون الهضبة مسبوقة بتحسن، كما يتبعها عادة تحسن لاحق في الأداء. وليس حدوث الهضبات من الظواهر الحتمية في منحنى التعلم؛ وإذا حدثت فيمكن تفسيرها بعوامل فسيولوجية ونفسية وظروف العمل.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-water"></i></div><div style="font-weight:900; color:var(--c-indigo)">تحسن 📈 ⬅️ هضبة (ركود) ➖ ⬅️ تحسن جديد 📈</div>`,
+    quiz: { q: "هل هضبة التعلم ظاهرة 'حتمية' لابد أن تحدث لكل الناس في كل المهارات؟", opts: ["نعم، لا مفر منها مطلقاً", "لا، ليست حتمية ويمكن تجاوزها أو عدم المرور بها"], ans: 1, fb: "صحيح! هي عرض لأسباب معينة، وليست قدراً بيولوجياً." }
+  },
+  {
+    tag: "أسباب الهضبة (1)",
+    title: "عوامل ترجع للمفحوص نفسه",
+    story: "الجسد والنفس يؤثران على سرعة التعلم؛ التعب العضلي والملل النفسي هما أعداء التقدم.",
+    content: "من أسباب الهضبة: 1. حدوث بعض الظواهر الفسيولوجية كالتعب وإجهاد العين أثناء القراءة.<br>2. الملل وانخفاض الدافعية للاستمرار.<br>3. ظهور مشاعر الإحباط وفقدان الحماس.<br>4. تشتت الانتباه وعدم التركيز.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-battery-quarter"></i></div><div style="font-weight:900; color:var(--c-indigo)">تعب + ملل + إحباط + تشتت = توقف التقدم</div>`,
+    quiz: { q: "من العوامل التي تعود للمفحوص وتسبب ظهور الهضبة:", opts: ["التعب الفسيولوجي والملل النفسي وتشتت الانتباه", "سهولة المادة الدراسية"], ans: 0, fb: "نعم، الإرهاق الجسدي والنفسي يوقف عجلة التقدم مؤقتاً." }
+  },
+  {
+    tag: "أسباب الهضبة (2)",
+    title: "عوامل ترجع لظروف التعلم",
+    story: "العادات القديمة قد تكون كالقيد، وتغيير طريقة العمل يشبه تغيير الحصان في منتصف المعركة.",
+    content: "أسباب أخرى للهضبة تعود للظروف: 1. اكتساب غير مقصود لعادة سيئة تعوق التقدم.<br>2. اكتساب عادات أولية غير كاملة.<br>3. الانتقال من طريقة في العمل لطريقة أخرى أبطأ أو أحدث (إعادة التكيف).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-shuffle"></i></div><div style="font-weight:900; color:var(--c-indigo)">عادات سيئة + تغيير الطريقة = إرباك وركود مؤقت</div>`,
+    quiz: { q: "الانتقال من طريقة عمل قديمة إلى طريقة جديدة يسبب:", opts: ["تحسناً هائلاً وفورياً", "ركوداً مؤقتاً في الأداء (هضبة) ريثما يتم التكيف"], ans: 1, fb: "بالضبط! فترة الانتقال تشهد تذبذباً وركوداً حتى إتقان الجديد." }
+  },
+  {
+    tag: "أسباب الهضبة (3)",
+    title: "عوامل ترجع لطبيعة العمل",
+    story: "للانتقال من مستوى المبتدئين إلى مستوى المحترفين، يجب أن تهضم الأساسيات أولاً قبل التقدم.",
+    content: "أسباب تعود لطبيعة العمل: 1. عملية تطور للانتقال من مستوى بسيط لمستوى أعقد.<br>2. استخدام الطريقة الجزئية والتركيز على جزء واحد حتى إتقانه.<br>3. عدم التدرج في صعوبة العمل ووجود فجوات كبيرة بين المراحل.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-layer-group"></i></div><div style="font-weight:900; color:var(--c-indigo)">التحضير للقفزة المعقدة يتطلب ركوداً استيعابياً للمرحلة البسيطة</div>`,
+    quiz: { q: "عدم التدرج في الصعوبة ووجود فجوات كبيرة بين دروس المنهج يؤدي إلى:", opts: ["ظهور هضبة التعلم لصعوبة الاستيعاب", "سرعة خارقة في التعلم"], ans: 0, fb: "نعم، الفجوات تربك المتعلم وتوقف تقدمه حتى يسد النقص." }
+  },
+  {
+    tag: "التركيز الانتقائي",
+    title: "تغير الانتباه (كسبب للهضبة)",
+    story: "عندما تركز على الدقة، تقل سرعتك؛ التوازن بين الدقة والسرعة هو ما يصنع الاحتراف.",
+    content: "من أسباب الهضبة أن يقرر المفحوص الانتقال من أحد جوانب الأداء إلى آخر. كأن يقرر التركيز على 'الدقة'؛ فيظهر المنحنى هضبة لأنه أهمل 'السرعة' مؤقتاً، والعكس صحيح عند التركيز على السرعة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-scale-unbalanced"></i></div><div style="font-weight:900; color:var(--c-indigo)">تركيز عالٍ على الدقة 🎯 ⬅️ انخفاض مؤقت في السرعة ⏱️</div>`,
+    quiz: { q: "إذا ركز الطالب فجأة على إتقان الدقة بشكل مبالغ فيه، فماذا يحدث لسرعته؟", opts: ["قد تنخفض ويظهر ركود في منحنى السرعة (هضبة)", "تزيد سرعته بشكل مضاعف تلقائياً"], ans: 0, fb: "أحسنت! الدقة تتطلب وقتاً أطول للمعالجة والتنفيذ." }
+  },
+  {
+    tag: "مرحلة الذروة",
+    title: "نهاية المنحنى ومستوى الإتقان",
+    story: "لكل رحلة نهاية، ولكن أين نقف بالضبط؟ هل نصل لأقصى حدودنا البيولوجية أم نتوقف عند الرضا الذاتي؟",
+    content: "من الواضح أن معدل التحسن لا يستمر إلى ما لا نهاية. سيأتي وقت يستوي فيه المنحنى ويصبح موازياً للمحور الأفقي عندما يصل أداء المفحوص إلى مستوى 'الإتقان الكامل' (Mastery) أو الحد الأقصى لقدرته.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-flag-checkered"></i></div><div style="font-weight:900; color:var(--c-indigo)">الاستواء التام = الإتقان الكامل (Mastery)</div>`,
+    quiz: { q: "عندما يصبح منحنى التعلم مستوياً وموازياً للمحور الأفقي في نهايته، فهذا يعني:", opts: ["وصول المفحوص إلى مستوى الإتقان أو الحد الأقصى للقدرة", "أن المفحوص نسي كل شيء"], ans: 0, fb: "صحيح! الاستواء النهائي هو علامة التشبع والإتقان." }
+  },
+  {
+    tag: "الحدود البشرية",
+    title: "الحد الفسيولوجي (البيولوجي المطلق)",
+    story: "مهما تدربت، لا يمكنك الجري أسرع من سرعة انتقال النبضة العصبية في جسدك؛ هناك حدود للطبيعة.",
+    content: "الحد الفسيولوجي هو مدى القدرة الذي لا يمكن للمفحوص أن يتخطاه مطلقاً بسبب حدود سرعة الأعصاب وقوة العضلات. وهو يختلف من شخص لآخر بسبب الوراثة، ونادراً ما نصل لهذا الحد في الأعمال المعقدة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-dna"></i></div><div style="font-weight:900; color:var(--c-indigo)">الحد الفسيولوجي = أقصى طاقة للأعصاب والعضلات</div>`,
+    quiz: { q: "هل يمكن للإنسان تخطي 'الحد الفسيولوجي' بكثرة التدريب والممارسة؟", opts: ["نعم، بالتدريب الشاق جداً", "لا، هو حد مطلق مفروض بسرعة الأعصاب وقوة العضلات"], ans: 1, fb: "بالضبط! هو الحد البيولوجي الذي لا يمكن كسره." }
+  },
+  {
+    tag: "الحدود المهنية",
+    title: "الحد العملي (مستوى عالم الطريقة)",
+    story: "نحن لا نصل للحد البيولوجي، بل نصل لحد 'الكفاية العملية' التي ترضي متطلبات العمل والحياة.",
+    content: "يسمي 'ودوورث' مستوى النهاية بـ 'مستوى عالم الطريقة' (Final Practice Level) وهو الحد العملي الممكن الوصول إليه وفق طريقة العمل والدافعية المتاحة. أغلب الناس يقفون عند مستوى الكفاية العملية المطلوبة فقط.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-briefcase"></i></div><div style="font-weight:900; color:var(--c-indigo)">الحد العملي = مستوى الكفاية الذي يتطلبه العمل (أقل من الفسيولوجي)</div>`,
+    quiz: { q: "الحد العملي الممكن (مستوى عالم الطريقة) يكون عادة:", opts: ["أقل بكثير من الحد الفسيولوجي المطلق", "أعلى من الحد الفسيولوجي المطلق"], ans: 0, fb: "نعم، الإنسان يكتفي غالباً بالمستوى الذي ينجز له العمل بشكل جيد." }
+  },
+  {
+    tag: "قوة الدافع",
+    title: "حدود الدافعية والرضا بالأداء",
+    story: "توقفنا عن التقدم ليس لنقص القدرة، بل لنقص الرغبة؛ الرضا الباكر عن الذات هو عدو التميز.",
+    content: "كثيراً ما يكون التوقف بسبب 'حدود الدافعية'؛ يقف المفحوص لأنه أصبح راضياً عن أدائه الراهن ولم يعد مهتماً بمزيد من التحسن. إذا وفرنا دافعاً قوياً (كعلاوة مالية) سيستمر المنحنى في الصعود مجدداً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-battery-half"></i></div><div style="font-weight:900; color:var(--c-indigo)">انعدام الدافع = توقف الأداء (رغم وجود قدرة كامنة)</div>`,
+    quiz: { q: "إذا وفرنا دافعاً ومكافأة قوية لطالب توقف أداؤه، فماذا سيحدث؟", opts: ["سيستمر المنحنى بالصعود لانكسار 'حد الدافعية'", "لن يتغير شيء لأنه وصل للحد الفسيولوجي"], ans: 0, fb: "أحسنت! الدافع الجديد يوقظ القدرات الكامنة." }
+  },
+  {
+    tag: "الشكل النموذجي",
+    title: "الشكل الكامل لمنحنى التعلم (حرف S)",
+    story: "لو أردنا رسم دورة التعلم كاملة، من البداية البطيئة للاندفاعة السريعة ثم الاستقرار، لرأينا حرف S.",
+    content: "إذا رسمنا منحنى التعلم منذ البداية وحتى الوصول للحد الأقصى للإتقان، فإن المنحنى سيأخذ صورة حرف (S) (إذا كان صاعداً) أو مقلوبه (إذا كان هابطاً). يبدأ بطيئاً، ثم يتسارع (سرعة إيجابية)، ثم يتباطأ (سرعة سلبية) حتى الهضبة النهائية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-s"></i></div><div style="font-weight:900; color:var(--c-indigo)">بطء ⬅️ تسارع ⬅️ بطء ⬅️ استواء نهائي = حرف S</div>`,
+    quiz: { q: "الشكل الكامل والنموذجي لمنحنى التعلم من البداية للنهاية يتخذ صورة:", opts: ["حرف S (تصاعدي وتنازلي متكامل)", "خط مستقيم عمودي"], ans: 0, fb: "صحيح! حرف S يمثل الدورة الكاملة لعملية التعلم." }
+  },
+  {
+    tag: "التغيرات الوقتية",
+    title: "الذبذبات القصيرة في المنحنى",
+    story: "خط التقدم ليس أملساً، بل مليء بالتعرجات اليومية الصغرى صعوداً وهبوطاً لتعكس إنسانيتنا وتقلباتنا.",
+    content: "نشهد صعوداً وهبوطاً قصير المدى بين محاولات التعلم يسمى 'الذبذبات'. تحدث بسبب اختلاف الظروف اليومية، تغير الميول، تشتت الانتباه، أو نقص الحافز. وهي تأثيرات وقتية يسهل ملاحظتها.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-wave-square"></i></div><div style="font-weight:900; color:var(--c-indigo)">تقلبات يومية بسبب المزاج، التعب، والانتباه</div>`,
+    quiz: { q: "الذبذبات القصيرة (الصعود والهبوط السريع) في منحنى التعلم تدل على:", opts: ["تأثيرات وقتية يومية كالتعب وتشتت الانتباه وتغير المزاج", "فشل العملية التعليمية بالكامل"], ans: 0, fb: "نعم، التذبذب هو طبيعة بشرية تأثراً بالظروف اللحظية." }
+  },
+  {
+    tag: "الكم والكيف",
+    title: "التغيرات الكيفية (ليس مجرد زيادة بالرقم)",
+    story: "التعلم ليس فقط أن تقرأ أسرع (تغير كمي)، بل أن تقرأ بفهم واستيعاب أعمق (تغير كيفي).",
+    content: "قد يوحي المنحنى بأن التعلم هو تغير 'كمي' فقط (نقص في الزمن أو زيادة في الإنتاج)، وهذا الانطباع غير صحيح. التعلم يرافقه تغير 'كيفي' جوهري يظهر بوضوح عند مقارنة أداء المبتدئ بأداء الخبير.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-gem"></i></div><div style="font-weight:900; color:var(--c-indigo)">تغير كمي (أرقام) + تغير كيفي (جودة ونضج)</div>`,
+    quiz: { q: "هل التعلم هو مجرد تغير إحصائي ورقمي في الأداء؟", opts: ["نعم، التعلم يعتمد على الأرقام فقط", "لا، هو تغير كمي يرافقه تغير كيفي جوهري في جودة الأداء"], ans: 1, fb: "أحسنت! الجودة والنضج هما جوهر التعلم الحقيقي." }
+  },
+  {
+    tag: "خصائص الخبير",
+    title: "اليسر، الانتظام، والمرونة (التغير الكيفي)",
+    story: "راقب المحترف؛ تجده يؤدي العمل الصعب بيسر كأنه يتنفس، بينما يتصبب المبتدئ عرقاً في أسهل الحركات.",
+    content: "يتميز أداء الخبير بأنه أكثر يسراً وانتظاماً واستقراراً، مع نقص التوتر العضلي الواضح لدى المبتدئ. كما يتميز أداء الخبير بالمرونة؛ حيث يكيف استجابته لتلائم التغيرات في المواقف والظروف بسهولة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-water"></i></div><div style="font-weight:900; color:var(--c-indigo)">أداء الخبير: مرونة عالية + يسر + نقص في التوتر</div>`,
+    quiz: { q: "ما الذي يميز الأداء الكيفي للخبير عن المبتدئ؟", opts: ["كثرة التوتر العضلي والعشوائية", "اليسر والانتظام والمرونة العالية في مواجهة التغيرات"], ans: 1, fb: "صحيح! الخبير يتكيف مع الطوارئ بانسيابية تامة." }
+  },
+  {
+    tag: "الفهم والاستبصار",
+    title: "حذف الاستجابات الزائدة وزيادة الاستبصار",
+    story: "الخبير لا يفعل الكثير، بل يفعل الضروري فقط. فهم العمل وحذف الحركات الزائدة هو قمة الكفاءة.",
+    content: "مع التقدم في التعلم، يحذف المتعلم الاستجابات غير الضرورية، وتزداد قوة الاستبصار والفهم بطبيعة العمل. الخبير يدرك الصورة الكلية، ويفهم علاقة كل جزء بالآخر بوضوح وتحديد.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-scissors"></i></div><div style="font-weight:900; color:var(--c-indigo)">حذف الزوائد ✂️ + إدراك الصورة الكلية 💡 = احتراف</div>`,
+    quiz: { q: "المراحل النهائية للتعلم (التغير الكيفي) تتميز بـ:", opts: ["كثرة الحركات العشوائية غير المبررة", "زيادة الاستبصار وحذف الاستجابات والحركات الزائدة غير الضرورية"], ans: 1, fb: "بالضبط! الكفاءة تعني تحقيق الهدف بأقل جهد ضروري." }
+  }
+];
+
+// --- Core Application Logic ---
+let currentSlide = 0;
+let xp = 0;
+const total = SLIDE_DATA.length;
+const answered = new Set();
+
+function initApp() {
+  const container = document.getElementById('main-container');
+  SLIDE_DATA.forEach((slide, index) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'slide' + (index === 0 ? ' active' : '');
+    slideDiv.id = 'slide-' + index;
+    
+    slideDiv.innerHTML = `
+      <div class="card">
+        <div class="tag">${slide.tag}</div>
+        <h2 style="font-size: clamp(1.5rem, 4vw, 2.3rem); color: var(--c-navy); margin-bottom: 25px; font-weight: 900; line-height:1.2;">${slide.title}</h2>
+        
+        <div class="story-box">
+          <i class="fa-solid fa-quote-right"></i>
+          <p>${slide.story}</p>
+        </div>
+
+        <div class="content-body">
+          ${slide.content}
+        </div>
+
+        <div class="visual-box">
+          ${slide.visual}
+        </div>
+
+        <div class="activity-box" id="actBox-${index}">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+             <div style="width: 45px; height: 45px; background: var(--c-sky); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
+                <i class="fa-solid fa-bolt"></i>
+             </div>
+             <h3 style="font-weight: 900; color: var(--c-navy); margin:0; font-size: 1.4rem;">تحدي الاستيعاب</h3>
+          </div>
+          
+          <p style="margin-bottom: 20px; font-weight: 800; font-size: 1.2rem; color: var(--c-navy); line-height: 1.5;">${slide.quiz.q}</p>
+          
+          <div style="display: grid; gap: 12px;">
+            <button class="act-btn" onclick="checkAns(${index}, 0, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[0]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-0"></i>
+            </button>
+            <button class="act-btn" onclick="checkAns(${index}, 1, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[1]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-1"></i>
+            </button>
+          </div>
+          <div class="feedback-msg" id="fb-${index}"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(slideDiv);
+  });
+  updateUI();
+}
+
+function checkAns(sIdx, chosen, correct, btn) {
+  const box = document.getElementById(`actBox-${sIdx}`);
+  if (answered.has(sIdx)) return;
+  answered.add(sIdx);
+
+  const fb = document.getElementById(`fb-${sIdx}`);
+  const buttons = box.querySelectorAll('.act-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    btn.querySelector('i').className = "fa-solid fa-circle-check";
+    fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#dcfce7";
+    fb.style.color = "#166534";
+    fb.style.display = "block";
+    xp += 100;
+    showToast("+100 XP! إتقان مذهل");
+    
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#0284c7', '#4f46e5', '#10b981']
+    });
+  } else {
+    btn.classList.add('wrong');
+    btn.querySelector('i').className = "fa-solid fa-circle-xmark";
+    fb.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#fee2e2";
+    fb.style.color = "#991b1b";
+    fb.style.display = "block";
+    buttons[correct].classList.add('correct');
+    buttons[correct].querySelector('i').className = "fa-solid fa-circle-check";
+  }
+  updateStats();
+}
+
+function move(dir) {
+  const slides = document.querySelectorAll('.slide');
+  if (currentSlide + dir < 0 || currentSlide + dir >= total) return;
+  
+  slides[currentSlide].classList.remove('active');
+  currentSlide += dir;
+  slides[currentSlide].classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('counter').innerText = `${currentSlide + 1} / ${total}`;
+  document.getElementById('progress-bar').style.width = ((currentSlide + 1) / total * 100) + '%';
+  document.getElementById('btn-prev').disabled = currentSlide === 0;
+  document.getElementById('btn-next').disabled = currentSlide === total - 1;
+}
+
+function updateStats() {
+  document.getElementById('scoreDisplay').innerText = xp;
+  let level = "مستكشف";
+  if (xp >= 1000) level = "باحث تربوي";
+  if (xp >= 2000) level = "أخصائي نفسي";
+  if (xp >= 3000) level = "بروفيسور";
+  if (xp >= 3500) level = "أسطورة التعلم";
+  document.getElementById('levelDisplay').innerText = level;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = "block";
+  t.style.animation = "fadeInOut 2.5s forwards";
+  setTimeout(() => { t.style.display = "none"; }, 2500);
+}
+
+window.onload = initApp;
+</script>
+
+</body>
+</html>

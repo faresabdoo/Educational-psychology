@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>علم النفس التربوي - نظرية الارتباط (ثورنديك)</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Canvas Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+/* ==========================================================================
+   UI System - Oceanic Indigo High-Contrast
+   ========================================================================== */
+:root {
+  --c-sky: #0284c7; 
+  --c-indigo: #4f46e5;
+  --c-navy: #0f172a; 
+  --c-cyan-light: #e0f2fe; 
+  --c-accent: #f59e0b; 
+  --c-bg: #f8fafc; 
+  --c-surface: #ffffff;
+  --c-text-main: #0f172a; 
+  --c-text-muted: #475569; 
+  --c-success: #10b981;
+  --c-danger: #ef4444;
+  --c-border: #e2e8f0;
+  --font-main: 'Cairo', sans-serif;
+  --font-story: 'Tajawal', sans-serif;
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --r-xl: 24px;
+  --t-base: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--c-bg);
+  color: var(--c-text-main);
+  line-height: 1.8;
+  background-image: radial-gradient(var(--c-cyan-light) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+  overflow-x: hidden;
+}
+
+/* Progress Tracking */
+#progress-container { position: fixed; top: 0; left: 0; right: 0; height: 7px; background: var(--c-border); z-index: 1100; }
+#progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--c-sky), var(--c-indigo)); transition: width var(--t-base); }
+
+/* Header */
+header {
+  position: fixed; top: 7px; left: 0; right: 0; height: 65px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 25px; border-bottom: 1px solid var(--c-border); z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 900; color: var(--c-navy); font-size: 1.2rem; }
+.brand i { color: var(--c-sky); font-size: 1.5rem; }
+.stats { display: flex; align-items: center; gap: 10px; }
+.badge { background: var(--c-bg); border: 2.5px solid var(--c-border); padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+
+/* Main Container */
+main { padding: 100px 20px 130px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+.slide { display: none; width: 100%; max-width: 950px; animation: slideReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.slide.active { display: block; }
+@keyframes slideReveal { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Slide Components */
+.card { background: var(--c-surface); border-radius: var(--r-xl); padding: clamp(25px, 5vw, 45px); box-shadow: var(--shadow-lg); border: 1px solid rgba(2, 132, 199, 0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+.tag { display: inline-block; padding: 6px 18px; background: var(--c-cyan-light); color: var(--c-sky); border-radius: 50px; font-size: 0.85rem; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; border: 1.5px solid var(--c-sky); }
+
+.story-box { background: linear-gradient(to left, var(--c-bg), #f0f9ff); border-right: 6px solid var(--c-indigo); padding: 25px; border-radius: 16px; margin: 25px 0; display: flex; gap: 20px; align-items: flex-start; }
+.story-box i { font-size: 2.5rem; color: var(--c-indigo); opacity: 0.7; }
+.story-box p { font-family: var(--font-story); font-style: italic; margin: 0; font-size: 1.25rem; color: var(--c-navy); font-weight: 600; }
+
+.content-body { font-size: 1.25rem; font-weight: 700; color: var(--c-navy); margin-bottom: 30px; text-align: justify; border-right: 4px solid var(--c-cyan-light); padding-right: 20px; line-height: 1.8; }
+
+.visual-box { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px dashed var(--c-sky); border-radius: 20px; padding: 35px; margin: 30px 0; text-align: center; }
+.v-icon { font-size: 5rem; color: var(--c-sky); margin-bottom: 15px; }
+
+/* Interactive Activity */
+.activity-box { background: #ffffff; border: 3px solid var(--c-sky); border-radius: var(--r-xl); padding: 35px; margin-top: 25px; box-shadow: inset 0 0 20px rgba(2, 132, 199, 0.05); }
+.act-btn {
+  width: 100%; background: #ffffff; border: 2px solid var(--c-border); padding: 20px;
+  border-radius: 16px; cursor: pointer; font-family: var(--font-main); font-size: 1.15rem;
+  font-weight: 800; text-align: right; margin-bottom: 15px; transition: all 0.25s ease;
+  display: flex; justify-content: space-between; align-items: center; color: var(--c-navy);
+}
+.act-btn:hover:not(:disabled) { border-color: var(--c-indigo); background: #f5f3ff; transform: translateX(-10px); }
+.act-btn.correct { background: #dcfce7; border-color: var(--c-success); color: #166534; }
+.act-btn.wrong { background: #fee2e2; border-color: var(--c-danger); color: #991b1b; }
+
+.feedback-msg { padding: 20px; border-radius: 12px; margin-top: 20px; font-weight: 900; font-size: 1.15rem; display: none; border: 1px solid rgba(0,0,0,0.1); }
+
+/* Footer Controls */
+footer {
+  position: fixed; bottom: 0; left: 0; right: 0; padding: 18px 40px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--c-border);
+  display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+}
+.btn { padding: 14px 35px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: var(--font-main); font-size: 1.05rem; }
+.btn-primary { background: linear-gradient(135deg, var(--c-indigo), var(--c-sky)); color: white; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3); }
+.btn-outline { background: white; color: var(--c-text-muted); border: 2.5px solid var(--c-border); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Stats Display */
+.toast { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: var(--c-navy); color: white; padding: 15px 30px; border-radius: 50px; z-index: 2000; display: none; font-weight: 800; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  20% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-container"><div id="progress-bar"></div></div>
+
+<header>
+  <div class="brand"><i class="fa-solid fa-network-wired"></i> الفصل الثالث: نظرية الارتباط</div>
+  <div class="stats">
+    <div class="badge"><i class="fa-solid fa-bolt" style="color:var(--c-accent)"></i> <span id="scoreDisplay">0</span> XP</div>
+    <div class="badge" style="color:var(--c-indigo);"><i class="fa-solid fa-award"></i> <span id="levelDisplay">مستكشف</span></div>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<main id="main-container"></main>
+
+<footer>
+  <button class="btn btn-outline" id="btn-prev" onclick="move(-1)">السابق</button>
+  <div id="counter" style="font-weight:900; color:var(--c-navy); font-size: 1.2rem;">1 / 37</div>
+  <button class="btn btn-primary" id="btn-next" onclick="move(1)">التالي</button>
+</footer>
+
+<script>
+/* ==========================================================================
+   DATASET: 37 شريحة كاملة للدرس (نظرية الارتباط: ثورنديك) بدون حذف
+   ========================================================================== */
+const SLIDE_DATA = [
+  {
+    tag: "المقدمة",
+    title: "الفصل الثالث: نظرية الارتباط (ثورنديك)",
+    story: "كيف نتعلم؟ هل نتعلم بالفهم المفاجئ أم بالتجربة والخطأ المستمر؟ دعونا نستكشف إحدى أهم نظريات التعلم في التاريخ.",
+    content: "نستعرض في هذا الدرس نظرية رائدة في علم النفس التربوي، وهي نظرية الارتباط، والتي قدمت تفسيراً عميقاً لكيفية حدوث التعلم وتكوين العادات عبر ربط المثيرات بالاستجابات.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-diagram-project"></i></div><div style="font-weight:900; color:var(--c-indigo)">المثير ⬅️ استجابة (ارتباط عصبي)</div>`,
+    quiz: { q: "ما هي النظرية التي سندرسها في هذا الفصل؟", opts: ["نظرية الارتباط (التعلم بالمحاولة والخطأ)", "نظرية التحليل النفسي للأحلام"], ans: 0, fb: "أحسنت! هذه النظرية هي حجر الأساس في المدرسة السلوكية." }
+  },
+  {
+    tag: "مسميات النظرية",
+    title: "تعدد الأسماء، والجوهر واحد",
+    story: "الشيء العظيم يُعرف بأسماء كثيرة؛ فهذه النظرية أحدثت ثورة لدرجة أن العلماء أطلقوا عليها عدة مسميات تصف جوانبها.",
+    content: "تُطلق على هذه النظرية أسماء متعددة منها: نظرية المحاولة والخطأ، نظرية الارتباط (Connectionism)، نظرية الوصلات العصبية، ونظرية (المثير - الاستجابة) ويرمز لها بـ (S - R).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-tags"></i></div><div style="font-weight:900; color:var(--c-indigo)">المحاولة والخطأ = الارتباط = (مثير-استجابة)</div>`,
+    quiz: { q: "إلى ماذا يرمز الاختصار (S - R) في هذه النظرية؟", opts: ["السرعة والراحة (Speed - Rest)", "المثير والاستجابة (Stimulus - Response)"], ans: 1, fb: "صحيح! الارتباط بين المثير (Stimulus) والاستجابة (Response) هو جوهر النظرية." }
+  },
+  {
+    tag: "الرائد والمؤسس",
+    title: "من هو إدوارد لي ثورنديك؟",
+    story: "الرواد هم من يمهدون الطرق الوعرة؛ وثورنديك كان المهندس الذي شق طريق علم النفس التجريبي في أمريكا.",
+    content: "رائد هذه النظرية هو العالم الأمريكي (إدوارد لي ثورنديك). يُعتبر من أوائل تلاميذ الرائد السيكولوجي 'وليام جيمس'، وأحد أبرز رواد علم النفس التجريبي في الولايات المتحدة الأمريكية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-user-tie"></i></div><div style="font-weight:900; color:var(--c-indigo)">إدوارد ثورنديك (رائد علم النفس التجريبي)</div>`,
+    quiz: { q: "يُعتبر ثورنديك من أبرز رواد:", opts: ["علم النفس التجريبي في أمريكا", "الفلسفة اليونانية القديمة"], ans: 0, fb: "نعم، لقد أسس منهجاً يعتمد على التجربة والملاحظة الدقيقة." }
+  },
+  {
+    tag: "الإسهامات العلمية",
+    title: "نشر التجريب على الحيوانات",
+    story: "لفهم الإنسان المعقد، بدأ العلماء بدراسة الكائنات الأبسط؛ فالتجربة في المختبر هي المعيار الحقيقي للعلم.",
+    content: "كان ثورنديك مسؤولاً عن نشر التجريب في علم النفس في الولايات المتحدة، ويدين له علم النفس بأنه أول من أدار نظام التجارب على الحيوانات على مستوى واسع ومدروس.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-microscope"></i></div><div style="font-weight:900; color:var(--c-indigo)">من التنظير الفلسفي ⬅️ إلى التجريب المعملي</div>`,
+    quiz: { q: "ما هو الإسهام الأبرز لثورنديك في علم النفس؟", opts: ["إدارة ونشر نظام التجارب المعملية على الحيوانات بشكل واسع", "الاعتماد على التأمل الفلسفي فقط"], ans: 0, fb: "صحيح! المعمل والتجربة هما أساس منهجه العلمي." }
+  },
+  {
+    tag: "الهدف والغاية",
+    title: "لماذا ندرس ذكاء الحيوان؟",
+    story: "القطة في القفص تخبرنا الكثير عن كيف يفكر الطفل في المدرسة؛ فالتعلم يتبع قوانين طبيعية مشتركة.",
+    content: "كان اهتمام ثورنديك في البداية منصباً على قياس الذكاء عند الحيوانات؛ بهدف أن يستطيع من خلال ذلك أن يلقي ضوءاً يفسر به مشاكل 'الذكاء الإنساني' وكيفية حدوث التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-cat"></i></div><div style="font-weight:900; color:var(--c-indigo)">دراسة الحيوان ⬅️ لفهم عقل الإنسان</div>`,
+    quiz: { q: "كان الهدف النهائي لثورنديك من دراسة ذكاء الحيوانات هو:", opts: ["تفسير مشاكل الذكاء الإنساني وآلية التعلم", "تأليف كتب عن رعاية الحيوانات الأليفة"], ans: 0, fb: "بالضبط! الحيوان كان مجرد نموذج لفهم آليات التعلم البشري." }
+  },
+  {
+    tag: "تطور الفكر",
+    title: "من مختبر الحيوان للغرفة الصفية",
+    story: "نضجت أفكاره وخرجت من جدران المختبر لتنير طريق المعلمين في المدارس وتصنع فارقاً في التعليم.",
+    content: "بدأت أبحاثه عن ذكاء الحيوان ثم وجهها نحو تفسير عملية التعلم في التربية. نشر أفكاره في كتاب 'علم النفس التربوي' (1913)، واستمر في تطبيق نظريته في ميادين التربية والتعليم والفروق الفردية حتى عام 1935.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-book-open"></i></div><div style="font-weight:900; color:var(--c-indigo)">المختبر 🧪 ⬅️ كتاب علم النفس التربوي 📚 ⬅️ المدرسة 🏫</div>`,
+    quiz: { q: "أين طبق ثورنديك نتائج أبحاثه المعملية لاحقاً؟", opts: ["في ميادين التربية والتعليم والقياس العقلي", "احتفظ بها سرا في مختبره ولم ينشرها"], ans: 0, fb: "نعم، أحدثت تطبيقاته ثورة في طرق التدريس والمناهج." }
+  },
+  {
+    tag: "موضوع علم النفس",
+    title: "السلوك هو الموضوع الحقيقي",
+    story: "لا يمكننا قياس الأفكار الخفية، لكننا نستطيع قياس ما يفعله الإنسان؛ السلوك هو المرآة الحقيقية للتعلم.",
+    content: "يرى ثورنديك أن موضوع علم النفس هو دراسة 'السلوك'؛ دراسة عملية يمكن قياسها. ويرى أن عملية التعلم ما هي إلا عبارة عن 'تغير في السلوك' نتيجة للتجربة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-person-running"></i></div><div style="font-weight:900; color:var(--c-indigo)">التعلم = تغير مادي ملحوظ في السلوك</div>`,
+    quiz: { q: "وفقاً لثورنديك، ما هو موضوع دراسة علم النفس الأساسي؟", opts: ["دراسة السلوك الذي يمكن ملاحظته وقياسه", "دراسة الأحلام والأفكار الباطنة فقط"], ans: 0, fb: "صحيح! السلوكيون يعتمدون فقط على ما يمكن ملاحظته." }
+  },
+  {
+    tag: "آلية السلوك",
+    title: "دورة السلوك: من التنبيه للاستجابة",
+    story: "كل حركة نقوم بها تبدأ بشرارة خارجية (مثير) تمر بأسلاك عصبية (الدماغ) لتتحول لفعل (استجابة).",
+    content: "السلوك لدى ثورنديك هو عملية تبدأ بـ 'تنبيه' على السطح الحساس للكائن الحي (الحواس)، ثم ينتقل من الأطراف للمراكز العصبية، وينتهي بـ 'استجابة' معينة قد تكون انقباضاً عضلياً أو إفرازاً غددياً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-bolt"></i></div><div style="font-weight:900; color:var(--c-indigo)">تنبيه (مثير) ⬅️ أعصاب ⬅️ استجابة حركية/غددية</div>`,
+    quiz: { q: "كيف تبدأ دورة السلوك حسب تفسير ثورنديك؟", opts: ["بتنبيه خارجي يقع على حواس الكائن الحي", "تبدأ دائماً من تلقاء نفسها دون أي منبه"], ans: 0, fb: "أحسنت! لا بد من وجود 'مثير' لحدوث 'استجابة'." }
+  },
+  {
+    tag: "أمثلة علمية",
+    title: "أمثلة على المثير والاستجابة",
+    story: "الضوء المبهر يجعلك تغمض عينك تلقائياً؛ هذا هو أبسط أشكال الارتباط بين المثير الخارجي وجسدك.",
+    content: "أي سلوك يتكون من (مثير - S) و (استجابة - R). مثال: سقوط الضوء على حدقة العين يعتبر (مثير)، وضيق الحدقة تبعاً لذلك يعتبر (استجابة). ورؤية الطعام (مثير)، وسيلان اللعاب (استجابة)، وهكذا.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-eye"></i></div><div style="font-weight:900; color:var(--c-indigo)">ضوء 🔦 (مثير) ⬅️ ضيق الحدقة 👁️ (استجابة)</div>`,
+    quiz: { q: "في مثال الطعام، ماذا يمثل 'سيلان اللعاب'؟", opts: ["الاستجابة (Response)", "المثير (Stimulus)"], ans: 0, fb: "صحيح! رؤية الطعام هي المثير، واللعاب هو الاستجابة." }
+  },
+  {
+    tag: "تعميم النظرية",
+    title: "من الحيوان إلى الإنسان",
+    story: "ما ينجح مع القطة في المتاهة، ينجح مع التلميذ في حل المسألة الرياضية المعقدة (وإن اختلفت الدرجة).",
+    content: "نلاحظ أن التعلم بـ 'المحاولة والخطأ' يفسر لنا بوضوح التعلم عند الحيوان، ولأن الكثير من التجارب أُجريت على القطط والكلاب والقرود، فقد وجد العلماء أن هذا النوع من التعلم مستخدم بكثرة عند الإنسان أيضاً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-people-arrows"></i></div><div style="font-weight:900; color:var(--c-indigo)">قوانين التعلم مشتركة وممتدة من الحيوان للإنسان</div>`,
+    quiz: { q: "هل ينحصر التعلم بالمحاولة والخطأ على الحيوانات فقط؟", opts: ["لا، بل يستخدمه الإنسان بكثرة في مواقف متعددة", "نعم، الإنسان لا يستخدم المحاولة والخطأ أبداً"], ans: 0, fb: "نعم، وخاصة في تعلم المهارات الحركية المعقدة." }
+  },
+  {
+    tag: "جوهر النظرية",
+    title: "تفسير ثورنديك لمعنى 'الارتباط'",
+    story: "التعلم ليس سوى جسر يُبنى في الدماغ؛ كلما عبرت عليه أكثر، أصبح الجسر أقوى وأمتن.",
+    content: "يقصد ثورنديك بـ 'التعلم': تقوية الارتباط الموجود بين المواقف (المثيرات) وبين الاستجابة الخاصة بها. التعلم يحدث بتقوية هذه الروابط أو الوصلات العصبية التي تربط المثير بالاستجابة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-link"></i></div><div style="font-weight:900; color:var(--c-indigo)">التعلم = تقوية الروابط (Connections) في الدماغ</div>`,
+    quiz: { q: "كيف يُعرّف ثورنديك التعلم؟", opts: ["بأنه تقوية الارتباط بين المثيرات والاستجابات", "بأنه زيادة في حجم الرأس"], ans: 0, fb: "صحيح! قوة الارتباط هي المقياس الحقيقي للتعلم." }
+  },
+  {
+    tag: "الأساس العصبي",
+    title: "الوصلات العصبية وقوة الارتباط",
+    story: "الأفكار لا تسبح في الفراغ؛ بل تسير في أسلاك عصبية، وقوة التعلم تعتمد على كفاءة هذه الأسلاك.",
+    content: "يرى ثورنديك أن الارتباط ذو 'طبيعة فسيولوجية وعصبية'؛ فهو انتقال التيار العصبي بين المراكز العصبية. قوة الارتباط تعني 'درجة احتمال' انتقال هذا التيار؛ فإذا كان الارتباط قوياً كان احتمال الانتقال كبيراً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-network-wired"></i></div><div style="font-weight:900; color:var(--c-indigo)">ارتباط قوي = انتقال عصبي سريع ومضمون</div>`,
+    quiz: { q: "ماذا يعني 'قوة الارتباط' في العصبونات حسب ثورنديك؟", opts: ["زيادة درجة احتمال انتقال التيار العصبي بسرعة وسهولة", "بطء الاستجابة للمثيرات"], ans: 0, fb: "أحسنت! قوة الارتباط تترجم لسرعة ودقة في السلوك." }
+  },
+  {
+    tag: "قوانين التعلم",
+    title: "قوانين ثورنديك الأساسية",
+    story: "لم يكتفِ بوصف التعلم، بل صاغ له قوانين حاسمة لتكون دليلاً للمعلمين في توجيه سلوك الطلاب.",
+    content: "لتفسير عملية التعلم، وضع ثورنديك مجموعة من القوانين الأساسية. كان الغرض منها الوصول إلى وصف دقيق يساعد على فهم عملية الاستيعاب، مما يؤدي لنتائج مثمرة في العملية التعليمية والتربوية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-scale-balanced"></i></div><div style="font-weight:900; color:var(--c-indigo)">فهم دقيق ⬅️ قوانين علمية ⬅️ نتائج تربوية مثمرة</div>`,
+    quiz: { q: "ما هو الغرض من وضع ثورنديك لقوانين التعلم؟", opts: ["مساعدة المعلمين على فهم الاستيعاب وتطبيق نتائج مثمرة", "إضافة صفحات كثيرة للكتب فقط"], ans: 0, fb: "نعم، القوانين وُضعت لخدمة الميدان التربوي العملي." }
+  },
+  {
+    tag: "القانون الأول",
+    title: "1. قانون الأثر (Law of Effect)",
+    story: "نحن نكرر ما يسعدنا، ونتجنب ما يؤلمنا؛ هذا هو أقوى قوانين الطبيعة البشرية.",
+    content: "ينص القانون: حينما يحدث ارتباط بين موقف واستجابة، ويصحب ذلك (حالة رضا وارتياح)، فإن قوة الارتباط تزداد. أما إذا صحبها (حالة ضيق أو ألم)، فإن قوة الارتباط تضعف وتقل.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-face-smile"></i></div><div style="font-weight:900; color:var(--c-indigo)">ارتياح 😊 = تقوية الرباط | ضيق 😞 = إضعاف الرباط</div>`,
+    quiz: { q: "حسب قانون الأثر، ماذا يحدث إذا كانت الاستجابة متبوعة بحالة ارتياح ورضا؟", opts: ["تزداد قوة الارتباط ويثبت التعلم", "تضعف قوة الارتباط ويُنسى التعلم"], ans: 0, fb: "صحيح! الارتياح هو غراء التعلم القوي." }
+  },
+  {
+    tag: "قانون الأثر",
+    title: "الناحية الإيجابية (الأثر الطيب)",
+    story: "المكافأة أو التشجيع تترك أثراً في النفس يجعلك ترغب بشدة في تكرار التجربة الناجحة.",
+    content: "لقانون الأثر ناحيتان. (الناحية الإيجابية): تتضمن أن كل محاولة أو خبرة مصحوبة بحالة رضا وارتياح، تترك أثراً طيباً في النفس؛ مما يساعد على تقوية الارتباط وزيادة سرعة حدوث التعلم وتثبيته.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-thumbs-up"></i></div><div style="font-weight:900; color:var(--c-indigo)">خبرة + رضا ⬅️ أثر طيب ⬅️ تثبيت قوي</div>`,
+    quiz: { q: "الأثر الطيب (الناحية الإيجابية) يساعد على:", opts: ["تقوية الارتباط العصبى وتثبيت التعلم", "إعاقة عملية التعلم"], ans: 0, fb: "بالضبط! الأثر الطيب يعزز تكرار السلوك الصحيح." }
+  },
+  {
+    tag: "قانون الأثر",
+    title: "الناحية السلبية (الأثر المؤلم)",
+    story: "العقاب والألم يخلقان جداراً من المقاومة، يجعل الكائن الحي يفر من الموقف ولا يكرره.",
+    content: "(الناحية السلبية): تتضمن أن كل محاولة مصحوبة بحالة ضيق أو ألم، تترك أثراً سيئاً في النفس. هذا الأثر يعمل على تكوين 'مقاومة' وتعطيل لتكرار الحدوث مستقبلاً، ويضعف الارتباط العصبي.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-thumbs-down"></i></div><div style="font-weight:900; color:var(--c-danger)">خبرة + ألم ⬅️ أثر سيء ⬅️ إضعاف ومقاومة</div>`,
+    quiz: { q: "الناحية السلبية لقانون الأثر تؤدي إلى:", opts: ["إضعاف الارتباط وتكوين مقاومة لتكرار السلوك", "زيادة سرعة التعلم والفهم"], ans: 0, fb: "صحيح! الألم ينفر المتعلم ويضعف الوصلة العصبية." }
+  },
+  {
+    tag: "أهمية قانون الأثر",
+    title: "التطبيق التربوي لقانون الأثر",
+    story: "المدارس التي تعتمد على الخوف تفشل، والتي تعتمد على الحب والتقدير تصنع المعجزات.",
+    content: "يعتبر قانون الأثر من أهم قوانين التعلم. يؤكد ثورنديك أن الحالة النفسية أثناء التعلم لها أهمية كبرى في سرعة التعليم. لذلك يجب أن تحاط البيئة المدرسية بجو من الرضا والتشجيع لتسريع التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-school-flag"></i></div><div style="font-weight:900; color:var(--c-indigo)">الجو النفسي الإيجابي = أداة تسريع التعليم</div>`,
+    quiz: { q: "للاستفادة من قانون الأثر في المدرسة، يجب على المعلم أن:", opts: ["يحيط عملية التعلم بجو من الرضا والتشجيع", "يعاقب الطلاب باستمرار"], ans: 0, fb: "نعم، التشجيع يطبق الناحية الإيجابية لقانون الأثر." }
+  },
+  {
+    tag: "القانون الثاني",
+    title: "2. قانون الاستعداد (Law of Readiness)",
+    story: "لا يمكنك إجبار زهرة على التفتح قبل أوانها؛ الاستعداد الفسيولوجي هو شرط الرضا.",
+    content: "يعتبر قانون الاستعداد 'شرحاً فسيولوجياً' لقانون الأثر؛ فهو يفسر متى يحدث الارتياح ومتى يحدث الضيق. وينص على ثلاث حالات توضح علاقة التهيؤ العصبي بالسلوك والرضا.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-battery-half"></i></div><div style="font-weight:900; color:var(--c-indigo)">الاستعداد يفسر الأساس البيولوجي للرضا والضيق</div>`,
+    quiz: { q: "قانون الاستعداد يعتبر شرحاً فسيولوجياً وعصبياً لـ:", opts: ["قانون الأثر (الرضا والضيق)", "قانون الجاذبية الأرضية"], ans: 0, fb: "أحسنت! هو يفسر 'لماذا' نشعر بالرضا أو الضيق." }
+  },
+  {
+    tag: "حالات الاستعداد",
+    title: "الحالة الأولى: الاستعداد مع العمل",
+    story: "عندما تكون جائعاً (مستعد) وتأكل (تعمل)، تشعر بسعادة غامرة؛ هذا هو التطابق المثالي.",
+    content: "ينص القانون (الحالة 1): حينما تكون الوحدة العصبية على 'استعداد' للعمل والسلوك، فإن عملها وسلوكها يريح الكائن الحي ويسبب له الرضا (استعداد + ممارسة = رضا).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-check-double"></i></div><div style="font-weight:900; color:var(--c-indigo)">مستعد للعمل + سُمح له بالعمل = رضا تام 😊</div>`,
+    quiz: { q: "طالب مستعد ومتحمس للإجابة، وسمح له المعلم بذلك، سيشعر بـ:", opts: ["الارتياح والرضا", "الضيق والألم"], ans: 0, fb: "صحيح! التوافق بين الاستعداد والعمل يولد الارتياح." }
+  },
+  {
+    tag: "حالات الاستعداد",
+    title: "الحالة الثانية: الاستعداد مع المنع",
+    story: "عندما تعرف الإجابة وتكون متحمساً (مستعد)، ويتجاهلك المعلم (يمنعك)؛ تشعر بضيق شديد.",
+    content: "(الحالة 2): حينما تكون الوحدة العصبية على 'استعداد' للعمل، ثم يمنع الكائن الحي من العمل، فإن عدم عملها يضايق الكائن الحي (استعداد + منع/إعاقة = ضيق وألم).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-hand"></i></div><div style="font-weight:900; color:var(--c-danger)">مستعد للعمل + مُنع منه = ضيق وألم 😞</div>`,
+    quiz: { q: "حسب الحالة الثانية، متى يشعر الكائن الحي بالضيق؟", opts: ["عندما يكون مستعداً للعمل ويُمنع منه", "عندما يسمح له بالعمل"], ans: 0, fb: "نعم، الكبت لدافع مستعد يولد إحباطاً وضيقاً." }
+  },
+  {
+    tag: "حالات الاستعداد",
+    title: "الحالة الثالثة: عدم الاستعداد مع الإجبار",
+    story: "إيقاظ شخص نائم بعمق (غير مستعد) وإجباره على الجري (إجبار) هو قمة العذاب.",
+    content: "(الحالة 3): حينما تكون الوحدة العصبية 'غير مستعدة' للعمل، فإن إجبارها على العمل يضايق الكائن الحي ويسبب له الألم (عدم استعداد + إجبار = ضيق وألم).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ban"></i></div><div style="font-weight:900; color:var(--c-danger)">غير مستعد + إجبار على العمل = ضيق وألم 😫</div>`,
+    quiz: { q: "إجبار طالب متعب ومرهق (غير مستعد) على دراسة مسألة معقدة سيؤدي إلى:", opts: ["شعوره بالضيق والألم والنفور", "شعوره بالسعادة البالغة"], ans: 0, fb: "بالضبط! الإجبار في غياب الاستعداد يقتل التعلم." }
+  },
+  {
+    tag: "معنى الاستعداد",
+    title: "التهيؤ النفسي والميل للعمل",
+    story: "الاستعداد ليس مجرد قدرة عضلية، بل هو رغبة مشتعلة وميل داخلي لاقتحام الموقف بشجاعة.",
+    content: "يتضمن قانون الاستعداد معنى 'الميل والرغبة' عند الكائن الحي لبذل الجهد. التهيؤ يظهر بأنه 'يُسعد' الموقف المتطلب للمحاولة. وكلما زاد التهيؤ والاستعداد، زادت سرعة التعلم.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-fire"></i></div><div style="font-weight:900; color:var(--c-indigo)">تهيؤ نفسي + ميل للعمل = تسريع التعلم</div>`,
+    quiz: { q: "المقصود الجوهري بكلمة 'الاستعداد' في نظرية ثورنديك هو:", opts: ["التهيؤ النفسي والميل والرغبة لبذل الجهد", "الوقوف في طابور الصباح"], ans: 0, fb: "صحيح! الاستعداد هنا يعبر عن الدافعية الداخلية." }
+  },
+  {
+    tag: "القانون الثالث",
+    title: "3. قانون التكرار أو التدريب (Exercise)",
+    story: "الماء المستمر يثقب الصخر؛ التكرار المستمر يحفر المعلومة في الدماغ ويقوي مساراتها العصبية.",
+    content: "ينص القانون على: (كلما زاد ارتباط موقف مع استجابة مهينة عبر الممارسة، فإن ميل هذا الموقف لاستدعاء الاستجابة 'يقوى' مستقبلاً). وينقسم هذا القانون لمسارين فرعيين.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-rotate"></i></div><div style="font-weight:900; color:var(--c-indigo)">تكرار الارتباط ⬅️ قوة وثبات الاستدعاء</div>`,
+    quiz: { q: "ما هو المبدأ الأساسي لقانون التكرار والتدريب؟", opts: ["كثرة الممارسة تقوي الارتباط بين الموقف والاستجابة", "التدريب يضعف الذاكرة"], ans: 0, fb: "أحسنت! الممارسة والتكرار هما أساس تكوين العادات." }
+  },
+  {
+    tag: "قانون الاستعمال",
+    title: "الشق الأول: قانون الاستعمال (Use)",
+    story: "السكين التي تُستعمل دائماً تبقى حادة ولامعة؛ والعضلة أو العادة التي نمارسها تزداد قوة.",
+    content: "(قانون الاستعمال): أي أن الروابط العصبية 'تقوى' عن طريق الاستعمال والممارسة. التكرار والتمرين للقيام بالمحاولات التي تؤدي للنجاح يساعد على بقاء آثار التعلم وتثبيتها.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-dumbbell"></i></div><div style="font-weight:900; color:var(--c-indigo)">استعمال وممارسة ⬅️ تقوية الروابط وتثبيتها</div>`,
+    quiz: { q: "وفقاً لقانون 'الاستعمال'، ماذا يحدث للارتباطات إذا تم تكرارها وممارستها؟", opts: ["تقوى وتثبت في الجهاز العصبي", "تُنسى وتتلاشى"], ans: 0, fb: "نعم، الاستعمال هو الغذاء الذي يقوي العادات." }
+  },
+  {
+    tag: "قانون الإهمال",
+    title: "الشق الثاني: قانون الإهمال (Disuse)",
+    story: "الآلة المتروكة يغطيها الصدأ؛ والمعلومة المهملة تتلاشى وتُمحى من الذاكرة بمرور الزمن.",
+    content: "(قانون الإهمال): أي أن الارتباطات 'تضعف وتُنسى' عن طريق عدم الاستعمال. قلة التردد والعمل في المهارة يقلل من سرعتها، وترك المهارة دون استعمال يؤدي إلى ضمور الوصلة العصبية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ghost"></i></div><div style="font-weight:900; color:var(--c-indigo)">إهمال وترك الممارسة ⬅️ إضعاف الوصلة والنسيان</div>`,
+    quiz: { q: "الطالب الذي يتعلم لغة ثم يترك التحدث بها لسنوات يخضع لـ:", opts: ["قانون الإهمال (وتضعف مهارته)", "قانون الاستعمال"], ans: 0, fb: "صحيح! ترك الاستعمال يؤدي للنسيان وضعف الارتباط." }
+  },
+  {
+    tag: "أهمية التكرار",
+    title: "أهمية قانون التكرار في العادات",
+    story: "لا يمكنك إتقان العزف من أول لمسة؛ العادات القوية تُبنى بصبر التكرار اليومي.",
+    content: "تعتبر هذه القوانين أساسية في تكوين العادات. الوسيلة لترسيخ عادة هي 'التكرار المستمر'. وإذا أردنا محو عادة سيئة، فالطريقة هي أن نتركها ونهمل محاولاتها (قانون الإهمال).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-calendar-check"></i></div><div style="font-weight:900; color:var(--c-indigo)">لبناء عادة: كررها | لمحو عادة: أهملها تماماً</div>`,
+    quiz: { q: "أفضل طريقة فسيولوجية وعصبية لمحو عادة سيئة حسب هذا القانون هي:", opts: ["تجاهلها وترك ممارستها تماماً (الإهمال)", "تكرارها مرات كثيرة جداً"], ans: 0, fb: "نعم، قطع الإمداد العصبي عبر الترك يؤدي لضمور العادة." }
+  },
+  {
+    tag: "جدل علمي",
+    title: "رأي واطسون والمدرسة السلوكية المتطرفة",
+    story: "هل التكرار الآلي الأعمى يكفي وحده للتعلم؟ واطسون كان يرى ذلك، لكن ثورنديك اكتشف العكس لاحقاً.",
+    content: "اعتقد 'واطسون' (السلوكي المتطرف) أن تأثير التكرار فقط كافٍ للتعلم؛ فالمحاولات التي تتكرر كثيراً هي التي تبقى في الجهاز العصبي. لكن هذا التفسير الآلي واجه اعتراضات جوهرية لاحقاً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-robot"></i></div><div style="font-weight:900; color:var(--c-indigo)">واطسون: التكرار الآلي وحدة يكفي (تم رفضه لاحقاً)</div>`,
+    quiz: { q: "من هو العالم الذي اعتقد خطأً أن 'التكرار الآلي فقط' يكفي لحدوث التعلم؟", opts: ["جون واطسون", "سيجموند فرويد"], ans: 0, fb: "صحيح! واطسون ركز على التكرار وأهمل 'الأثر والرضا'." }
+  },
+  {
+    tag: "تعديل النظرية",
+    title: "ثورنديك يُعدل قانون التدريب",
+    story: "العالم الحقيقي هو من يصحح أخطاءه؛ أدرك ثورنديك أن التكرار بدون مكافأة أو تشجيع لا يصنع تعلماً جيداً.",
+    content: "وجهت اعتراضات قوية لقانون التكرار المجرد، أهمها أن التكرار الخالي من الرضا لا يحدث أثراً كافياً. وقد أبدى ثورنديك لاحقاً تعديلاً على القانون: (التدريب وحده لا يكفي لحدوث التعلم؛ بل يكتسب قيمته بمصاحبة الأثر/النتيجة).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-wrench"></i></div><div style="font-weight:900; color:var(--c-indigo)">التعديل: التكرار + الرضا والتشجيع = تعلم حقيقي</div>`,
+    quiz: { q: "ما هو التعديل الهام الذي أضافه ثورنديك على قانون التكرار والتدريب؟", opts: ["أن التدريب المجرد لا يكفي، بل يجب أن يصحبه الرضا والأثر الطيب", "أن التدريب يجب أن يُمنع تماماً"], ans: 0, fb: "بالضبط! الممارسة العمياء بلا تغذية راجعة لا تفيد كثيراً." }
+  },
+  {
+    tag: "نقد التكرار الأعمى",
+    title: "مجرد تكرار الحركات لا يفيد",
+    story: "من يكرر الخطأ ألف مرة، يصبح محترفاً في الخطأ؛ التكرار يحتاج لتوجيه ونتيجة ليصبح تعلماً.",
+    content: "أكد التعديل أن: (مجرد تكرار الحركات لا يؤدي لعملية التعلم، وهو ليس كافياً لظهور ارتباط حقيقي). بل التكرار الذي ينتج عنه الرضا (قانون الأثر) هو الذي يقوي الرباط العصبي فعلياً.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrows-spin"></i></div><div style="font-weight:900; color:var(--c-danger)">تكرار أعمى ❌ | تكرار موجه بنتائج مرضية ✅</div>`,
+    quiz: { q: "هل تكرار طالب لكتابة كلمة بـ 'طريقة خاطئة' 100 مرة يفيده؟", opts: ["لا، بل يرسخ الخطأ لأنه تكرار بدون تغذية راجعة وتصحيح", "نعم، سيتعلم تلقائياً"], ans: 0, fb: "صحيح! التكرار يثبت ما تفعله، سواء كان صحاً أم خطأ." }
+  },
+  {
+    tag: "تكامل القوانين",
+    title: "القوانين الثلاثة تعمل معاً (متضامنة)",
+    story: "قوانين ثورنديك ليست جزراً منعزلة؛ بل هي كآلات الأوركسترا التي تعزف معاً لتُنتج سيمفونية التعلم.",
+    content: "جدير بالذكر أن هذه القوانين الثلاثة (الأثر، الاستعداد، التكرار) تعمل 'متضامنة' في عملية التعلم، وليست منفصلة. ولا يصح أن نعتمد في التدريس على التكرار الآلي وحده متجاهلين استعداد المتعلم وأثره النفسي.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-puzzle-piece"></i></div><div style="font-weight:900; color:var(--c-indigo)">استعداد ➕ تكرار ➕ أثر طيب = تعلم متكامل</div>`,
+    quiz: { q: "كيف تعمل القوانين الثلاثة (الأثر، الاستعداد، التكرار) في عملية التعلم؟", opts: ["تعمل متضامنة ومتكاملة معاً لتفسير وتوجيه التعلم", "تعمل بشكل منفصل تماماً ولا علاقة لها ببعضها"], ans: 0, fb: "نعم، تكاملها هو الذي يفسر التعلم بشكل صحيح." }
+  },
+  {
+    tag: "التطبيق التربوي",
+    title: "ضرورة الإرشاد والتبصير",
+    story: "تخبط الطالب في الظلام يُهدر وقته؛ إرشاد المعلم وتصحيحه للأخطاء هو المصباح الذي ينير الطريق.",
+    content: "يجب أن يكون التكرار مصحوباً بالتصحيح للمحاولات الخاطئة. كما أن إرشاد وتبصير المتعلم بمحاولاته الناجحة ومحاولاته الخاطئة (التغذية الراجعة) يساعد على سرعة التعلم والاقتصاد في الجهد والوقت.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-compass"></i></div><div style="font-weight:900; color:var(--c-indigo)">توجيه وإرشاد ⬅️ اختصار الوقت والجهد ⏱️</div>`,
+    quiz: { q: "إخبار المعلم لطالبه بأخطائه وإجاباته الصحيحة يعتبر:", opts: ["تبصيراً وتغذية راجعة تسرع عملية التعلم وتوفر الجهد", "إضاعة لوقت الحصة"], ans: 0, fb: "صحيح! التوجيه الفوري يمنع تثبيت الأخطاء." }
+  },
+  {
+    tag: "الأثر النفسي",
+    title: "أهمية الجو النفسي الإيجابي",
+    story: "الزهرة لا تنمو في الصقيع؛ وعقل الطالب لا يستوعب في جو مشحون بالخوف والقسوة.",
+    content: "سرعة التعلم تتوقف كثيراً على الأثر النفسي. من يتعلم في جو من الحب، العطف، والتشجيع يتولد عنده أثر نفسي طيب يسرع التعلم. بينما القسوة والتعنيف تحدث أثراً سيئاً يؤدي لمقاومة التعلم وكراهيته.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-heart-circle-bolt"></i></div><div style="font-weight:900; color:var(--c-indigo)">جو إيجابي = استيعاب سريع | قسوة وتخويف = مقاومة وكراهية</div>`,
+    quiz: { q: "التأثير النفسي لأسلوب 'القسوة والتعنيف' المستمر على الطالب هو:", opts: ["توليد أثر نفسي سيء يجعله يقاوم التعلم ويكره المدرسة", "جعله طالباً متفوقاً وعبقرياً"], ans: 0, fb: "نعم، الخوف يغلق مراكز التعلم في الدماغ ويولد النفور." }
+  },
+  {
+    tag: "استخدامات المحاولة",
+    title: "متى نلجأ للتعلم بالمحاولة والخطأ؟",
+    story: "حين تغيب الخبرة ويغيب الإرشاد، لا نملك سوى التخبط والتجربة حتى نصل للحل صدفة.",
+    content: "يُستخدم التعلم بالمحاولة والخطأ مع: (1) الحيوانات الدنيا التي لا تملك قدرة على التفكير. (2) الأطفال الصغار الذين لم تنمُ قدراتهم العقلية بشكل كافٍ لحل المشكلات بالتفكير المجرد.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-baby"></i></div><div style="font-weight:900; color:var(--c-indigo)">غياب التفكير المجرد ⬅️ الاعتماد على التجربة الحسية والخطأ</div>`,
+    quiz: { q: "لماذا يعتمد الأطفال الصغار بكثرة على المحاولة والخطأ؟", opts: ["لأن قدراتهم العقلية والتفكيرية لم تنضج بشكل كافٍ بعد", "لأنهم يفضلون إضاعة الوقت"], ans: 0, fb: "صحيح! النضج العقلي هو الذي يوفر عليهم لاحقاً هذه المحاولات." }
+  },
+  {
+    tag: "استخدامات للمحاولة",
+    title: "متى يستخدم الكبار هذا الأسلوب؟",
+    story: "حتى أذكى العلماء سيستخدم المحاولة والخطأ إذا وُضع في غابة مظلمة لم يدخلها من قبل.",
+    content: "يستخدم الكبار هذا الأسلوب في حالات: انعدام عامل الخبرة، عدم توفر المهارة السابقة، أو عدم وجود القدر الكافي من المعلومات (أو الذكاء أحياناً) لحل المشكلة المعروضة بالتفكير المباشر.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-person-circle-question"></i></div><div style="font-weight:900; color:var(--c-indigo)">انعدام الخبرة والمعلومات ⬅️ تخبط وتجربة وخطأ</div>`,
+    quiz: { q: "متى يُضطر الإنسان البالغ لاستخدام التعلم بالمحاولة والخطأ؟", opts: ["عندما تنعدم لديه الخبرة السابقة أو المعلومات الكافية عن الموقف", "فقط عندما يكون بمفرده في المنزل"], ans: 0, fb: "أحسنت! غياب المعرفة يفرض علينا التخبط لجمع البيانات." }
+  },
+  {
+    tag: "مجالات التطبيق",
+    title: "تكوين المهارات الحركية (Motor Skills)",
+    story: "لا يمكنك تعلم السباحة بقراءة كتاب عنها؛ جسدك يحتاج للخطأ والتكرار ليتقن الحركة.",
+    content: "التعلم بالمحاولة والخطأ هو 'أساس' لاكتساب وتكوين المهارات الحركية، والعادات، والمهارات العضلية البحتة؛ مثل: تعلم السباحة، العزف على الآلات الموسيقية، أو الكتابة على الآلة الكاتبة (الكيبورد).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-keyboard"></i></div><div style="font-weight:900; color:var(--c-indigo)">المهارات الحركية تتطلب التخبط العضلي المبدئي لتُصقل لاحقاً</div>`,
+    quiz: { q: "أي من المهارات التالية تعتمد بشكل كبير جداً في بدايتها على المحاولة والخطأ؟", opts: ["تعلم العزف على البيانو أو الطباعة على لوحة المفاتيح", "حفظ قصيدة شعرية مقروءة"], ans: 0, fb: "نعم، التآزر العضلي الحركي يتطلب تدريباً عملياً وتجربة." }
+  },
+  {
+    tag: "خصائص التعلم",
+    title: "التعلم الميكانيكي (الآلي)",
+    story: "أحياناً ننجز الأمور ونتعلمها دون أن نفهم 'لماذا' فعلنا ذلك؛ كفتح قفل معقد صدفة.",
+    content: "من خصائص هذا التعلم أنه يتحقق بطريقة 'ميكانيكية' (آلية) عن طريق محاولات وأخطاء حركية ظاهرة، وبدون تحديد واضح للهدف أو فهم كامل للروابط الفكرية الكامنة وراء العمل.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-gears"></i></div><div style="font-weight:900; color:var(--c-indigo)">أداء ميكانيكي آلي ⬅️ دون فهم عميق للروابط</div>`,
+    quiz: { q: "التعلم الذي يتم بمجرد تكرار الحركات العشوائية دون فهم واضح للهدف يسمى تعلماً:", opts: ["ميكانيكياً (آلياً)", "إبداعياً (استبصاراً)"], ans: 0, fb: "صحيح! هذا هو الجانب السلبي في الاعتماد الكلي على المحاولة والخطأ." }
+  },
+  {
+    tag: "الخلاصة",
+    title: "ملخص نظرية الارتباط",
+    story: "قدم لنا ثورنديك خريطة الدماغ البشري؛ حيث المثير يستدعي استجابة، والأثر الطيب هو الغراء الذي يثبتها.",
+    content: "نظرية ثورنديك (الارتباط) تؤكد أن التعلم يحدث بتقوية الوصلات العصبية بين المثيرات والاستجابات عبر المحاولة والخطأ. وتحكمه 3 قوانين كبرى متضامنة: الاستعداد (الدافعية)، التكرار (الممارسة)، والأثر (الرضا أو الضيق).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-brain"></i></div><div style="font-weight:900; color:var(--c-indigo)">الاستعداد ➕ التدريب ➕ المكافأة (الأثر) = تعلم راسخ</div>`,
+    quiz: { q: "وفقاً للنظرية، كيف نقوي الوصلات العصبية للتعلم بشكل صحيح وراسخ؟", opts: ["بوجود استعداد، وممارسة مستمرة، مصحوبة بتشجيع وأثر طيب", "بتكرار أعمى فقط دون أي تشجيع"], ans: 0, fb: "ممتاز! هذا هو الاستنتاج الذهبي لنظرية ثورنديك." }
+  },
+  {
+    tag: "الخاتمة",
+    title: "أكملت الفصل الثالث بنجاح!",
+    story: "أنت الآن تمتلك الأدوات لفهم كيف تتكون العادات وكيف يمكن هندسة بيئة التعلم لتكون محفزة ومنتجة.",
+    content: "لقد استعرضنا بدقة متناهية 37 شريحة شملت جوهر نظرية الارتباط لثورنديك، بدايات التجريب المعملي، قوانين الأثر والاستعداد والتدريب، وأهمية البيئة النفسية الإيجابية في تسريع العملية التعليمية.",
+    visual: `<div class="v-icon" style="color:var(--c-accent)"><i class="fa-solid fa-trophy"></i></div><div style="font-weight:900; color:var(--c-indigo)">مرحى! لقد أتقنت نظرية المحاولة والخطأ باقتدار</div>`,
+    quiz: { q: "هل أنت مستعد لتطبيق قوانين الأثر الإيجابي والتدريب الواعي في تعليمك؟", opts: ["نعم، سأحيط التعلم بالتشجيع والفهم", "لا، سأعتمد على التلقين الآلي"], ans: 0, fb: "رائع جداً! تطبيق هذه النظريات هو ما يصنع المعلم المتميز والمبدع." }
+  }
+];
+
+// --- Core Application Logic ---
+let currentSlide = 0;
+let xp = 0;
+const total = SLIDE_DATA.length;
+const answered = new Set();
+
+function initApp() {
+  const container = document.getElementById('main-container');
+  SLIDE_DATA.forEach((slide, index) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'slide' + (index === 0 ? ' active' : '');
+    slideDiv.id = 'slide-' + index;
+    
+    slideDiv.innerHTML = `
+      <div class="card">
+        <div class="tag">${slide.tag}</div>
+        <h2 style="font-size: clamp(1.5rem, 4vw, 2.3rem); color: var(--c-navy); margin-bottom: 25px; font-weight: 900; line-height:1.2;">${slide.title}</h2>
+        
+        <div class="story-box">
+          <i class="fa-solid fa-quote-right"></i>
+          <p>${slide.story}</p>
+        </div>
+
+        <div class="content-body">
+          ${slide.content}
+        </div>
+
+        <div class="visual-box">
+          ${slide.visual}
+        </div>
+
+        <div class="activity-box" id="actBox-${index}">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+             <div style="width: 45px; height: 45px; background: var(--c-sky); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
+                <i class="fa-solid fa-bolt"></i>
+             </div>
+             <h3 style="font-weight: 900; color: var(--c-navy); margin:0; font-size: 1.4rem;">تحدي الاستيعاب</h3>
+          </div>
+          
+          <p style="margin-bottom: 20px; font-weight: 800; font-size: 1.2rem; color: var(--c-navy); line-height: 1.5;">${slide.quiz.q}</p>
+          
+          <div style="display: grid; gap: 12px;">
+            <button class="act-btn" onclick="checkAns(${index}, 0, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[0]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-0"></i>
+            </button>
+            <button class="act-btn" onclick="checkAns(${index}, 1, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[1]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-1"></i>
+            </button>
+          </div>
+          <div class="feedback-msg" id="fb-${index}"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(slideDiv);
+  });
+  updateUI();
+}
+
+function checkAns(sIdx, chosen, correct, btn) {
+  const box = document.getElementById(`actBox-${sIdx}`);
+  if (answered.has(sIdx)) return;
+  answered.add(sIdx);
+
+  const fb = document.getElementById(`fb-${sIdx}`);
+  const buttons = box.querySelectorAll('.act-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    btn.querySelector('i').className = "fa-solid fa-circle-check";
+    fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#dcfce7";
+    fb.style.color = "#166534";
+    fb.style.display = "block";
+    xp += 100;
+    showToast("+100 XP! إتقان مذهل");
+    
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#0284c7', '#4f46e5', '#10b981']
+    });
+  } else {
+    btn.classList.add('wrong');
+    btn.querySelector('i').className = "fa-solid fa-circle-xmark";
+    fb.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#fee2e2";
+    fb.style.color = "#991b1b";
+    fb.style.display = "block";
+    buttons[correct].classList.add('correct');
+    buttons[correct].querySelector('i').className = "fa-solid fa-circle-check";
+  }
+  updateStats();
+}
+
+function move(dir) {
+  const slides = document.querySelectorAll('.slide');
+  if (currentSlide + dir < 0 || currentSlide + dir >= total) return;
+  
+  slides[currentSlide].classList.remove('active');
+  currentSlide += dir;
+  slides[currentSlide].classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('counter').innerText = `${currentSlide + 1} / ${total}`;
+  document.getElementById('progress-bar').style.width = ((currentSlide + 1) / total * 100) + '%';
+  document.getElementById('btn-prev').disabled = currentSlide === 0;
+  document.getElementById('btn-next').disabled = currentSlide === total - 1;
+}
+
+function updateStats() {
+  document.getElementById('scoreDisplay').innerText = xp;
+  let level = "مستكشف";
+  if (xp >= 1000) level = "باحث تربوي";
+  if (xp >= 2000) level = "أخصائي نفسي";
+  if (xp >= 3000) level = "بروفيسور";
+  if (xp >= 3500) level = "أسطورة التعلم";
+  document.getElementById('levelDisplay').innerText = level;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = "block";
+  t.style.animation = "fadeInOut 2.5s forwards";
+  setTimeout(() => { t.style.display = "none"; }, 2500);
+}
+
+window.onload = initApp;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>علم النفس التربوي - نظرية انتقال أثر التعلم</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Canvas Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+/* ==========================================================================
+   UI System - Oceanic Indigo High-Contrast
+   ========================================================================== */
+:root {
+  --c-sky: #0284c7; 
+  --c-indigo: #4f46e5;
+  --c-navy: #0f172a; 
+  --c-cyan-light: #e0f2fe; 
+  --c-accent: #f59e0b; 
+  --c-bg: #f8fafc; 
+  --c-surface: #ffffff;
+  --c-text-main: #0f172a; 
+  --c-text-muted: #475569; 
+  --c-success: #10b981;
+  --c-danger: #ef4444;
+  --c-border: #e2e8f0;
+  --font-main: 'Cairo', sans-serif;
+  --font-story: 'Tajawal', sans-serif;
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --r-xl: 24px;
+  --t-base: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--c-bg);
+  color: var(--c-text-main);
+  line-height: 1.8;
+  background-image: radial-gradient(var(--c-cyan-light) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
+  overflow-x: hidden;
+}
+
+/* Progress Tracking */
+#progress-container { position: fixed; top: 0; left: 0; right: 0; height: 7px; background: var(--c-border); z-index: 1100; }
+#progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--c-sky), var(--c-indigo)); transition: width var(--t-base); }
+
+/* Header */
+header {
+  position: fixed; top: 7px; left: 0; right: 0; height: 65px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 25px; border-bottom: 1px solid var(--c-border); z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 900; color: var(--c-navy); font-size: 1.2rem; }
+.brand i { color: var(--c-sky); font-size: 1.5rem; }
+.stats { display: flex; align-items: center; gap: 10px; }
+.badge { background: var(--c-bg); border: 2.5px solid var(--c-border); padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+
+/* Main Container */
+main { padding: 100px 20px 130px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+.slide { display: none; width: 100%; max-width: 950px; animation: slideReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.slide.active { display: block; }
+@keyframes slideReveal { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Slide Components */
+.card { background: var(--c-surface); border-radius: var(--r-xl); padding: clamp(25px, 5vw, 45px); box-shadow: var(--shadow-lg); border: 1px solid rgba(2, 132, 199, 0.1); margin-bottom: 30px; position: relative; overflow: hidden; }
+.tag { display: inline-block; padding: 6px 18px; background: var(--c-cyan-light); color: var(--c-sky); border-radius: 50px; font-size: 0.85rem; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; border: 1.5px solid var(--c-sky); }
+
+.story-box { background: linear-gradient(to left, var(--c-bg), #f0f9ff); border-right: 6px solid var(--c-indigo); padding: 25px; border-radius: 16px; margin: 25px 0; display: flex; gap: 20px; align-items: flex-start; }
+.story-box i { font-size: 2.5rem; color: var(--c-indigo); opacity: 0.7; }
+.story-box p { font-family: var(--font-story); font-style: italic; margin: 0; font-size: 1.25rem; color: var(--c-navy); font-weight: 600; }
+
+.content-body { font-size: 1.25rem; font-weight: 700; color: var(--c-navy); margin-bottom: 30px; text-align: justify; border-right: 4px solid var(--c-cyan-light); padding-right: 20px; line-height: 1.8; }
+
+.visual-box { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px dashed var(--c-sky); border-radius: 20px; padding: 35px; margin: 30px 0; text-align: center; }
+.v-icon { font-size: 5rem; color: var(--c-sky); margin-bottom: 15px; }
+
+/* Interactive Activity */
+.activity-box { background: #ffffff; border: 3px solid var(--c-sky); border-radius: var(--r-xl); padding: 35px; margin-top: 25px; box-shadow: inset 0 0 20px rgba(2, 132, 199, 0.05); }
+.act-btn {
+  width: 100%; background: #ffffff; border: 2px solid var(--c-border); padding: 20px;
+  border-radius: 16px; cursor: pointer; font-family: var(--font-main); font-size: 1.15rem;
+  font-weight: 800; text-align: right; margin-bottom: 15px; transition: all 0.25s ease;
+  display: flex; justify-content: space-between; align-items: center; color: var(--c-navy);
+}
+.act-btn:hover:not(:disabled) { border-color: var(--c-indigo); background: #f5f3ff; transform: translateX(-10px); }
+.act-btn.correct { background: #dcfce7; border-color: var(--c-success); color: #166534; }
+.act-btn.wrong { background: #fee2e2; border-color: var(--c-danger); color: #991b1b; }
+
+.feedback-msg { padding: 20px; border-radius: 12px; margin-top: 20px; font-weight: 900; font-size: 1.15rem; display: none; border: 1px solid rgba(0,0,0,0.1); }
+
+/* Footer Controls */
+footer {
+  position: fixed; bottom: 0; left: 0; right: 0; padding: 18px 40px;
+  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--c-border);
+  display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+}
+.btn { padding: 14px 35px; border-radius: 50px; border: none; font-weight: 900; cursor: pointer; transition: 0.3s; font-family: var(--font-main); font-size: 1.05rem; }
+.btn-primary { background: linear-gradient(135deg, var(--c-indigo), var(--c-sky)); color: white; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3); }
+.btn-outline { background: white; color: var(--c-text-muted); border: 2.5px solid var(--c-border); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Stats Display */
+.toast { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: var(--c-navy); color: white; padding: 15px 30px; border-radius: 50px; z-index: 2000; display: none; font-weight: 800; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  20% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-container"><div id="progress-bar"></div></div>
+
+<header>
+  <div class="brand"><i class="fa-solid fa-people-carry-box"></i> الدرس الثالث: انتقال أثر التعلم</div>
+  <div class="stats">
+    <div class="badge"><i class="fa-solid fa-bolt" style="color:var(--c-accent)"></i> <span id="scoreDisplay">0</span> XP</div>
+    <div class="badge" style="color:var(--c-indigo);"><i class="fa-solid fa-award"></i> <span id="levelDisplay">مستكشف</span></div>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<main id="main-container"></main>
+
+<footer>
+  <button class="btn btn-outline" id="btn-prev" onclick="move(-1)">السابق</button>
+  <div id="counter" style="font-weight:900; color:var(--c-navy); font-size: 1.2rem;">1 / 23</div>
+  <button class="btn btn-primary" id="btn-next" onclick="move(1)">التالي</button>
+</footer>
+
+<script>
+/* ==========================================================================
+   DATASET: 23 شريحة كاملة للدرس الثالث (انتقال أثر التعلم) - تم تصحيح الـ OCR وعدم الحذف
+   ========================================================================== */
+const SLIDE_DATA = [
+  {
+    tag: "مقدمة الدرس",
+    title: "ثالثاً: نظرية انتقال أثر التعلم",
+    story: "هل ما تتعلمه في صف الرياضيات يفيدك في فهم قوانين الفيزياء؟ كيف تنتقل مهارة من مجال لآخر؟ هذا ما يسمى بـ 'انتقال أثر التعلم'.",
+    content: "ظهرت عدة نظريات لتفسير كيفية انتقال أثر التعلم من موقف إلى آخر، وقد صيغت هذه النظريات وتطورت حتى أوائل القرن العشرين. وسنستعرض هنا أهم هذه النظريات التأسيسية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-shuffle"></i></div><div style="font-weight:900; color:var(--c-indigo)">خبرة سابقة ⬅️ تنتقل ⬅️ لتسهيل أو إعاقة تعلم جديد</div>`,
+    quiz: { q: "بماذا يهتم موضوع 'انتقال أثر التعلم'؟", opts: ["دراسة كيف تؤثر خبرة تعلمناها سابقاً على تعلم مهارة جديدة", "دراسة طريقة تصميم المدارس وتلوينها"], ans: 0, fb: "أحسنت! هذا هو جوهر انتقال الخبرة من موقف لآخر." }
+  },
+  {
+    tag: "النظريات القديمة",
+    title: "1. نظرية التدريب الشكلي (أو الصوري)",
+    story: "في الماضي، اعتقد الناس أن العقل كالعضلة؛ إذا دربتها بالرياضيات الصعبة، ستصبح قوية وقادرة على تحمل أي مشكلة في الحياة.",
+    content: "نظرية 'التدريب الشكلي' أو الصوري، هي نظرية قديمة تقوم على ما يسمى بـ 'نظرية الملكات' (أو سيكولوجية الملكات). كانت تفترض أن العقل يتكون من قوى أو قدرات مستقلة يجب تدريبها.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-dumbbell"></i></div><div style="font-weight:900; color:var(--c-indigo)">التدريب الشكلي = تدريب العقل كعضلة رياضية</div>`,
+    quiz: { q: "نظرية 'التدريب الشكلي' بُنيت أساساً على نظرية قديمة تُعرف بـ:", opts: ["نظرية الملكات (أو سيكولوجية الملكات)", "نظرية الجشطالت الحديثة"], ans: 0, fb: "صحيح! كانت تفترض أن العقل مقسم لملكات (قدرات) كالعضلات." }
+  },
+  {
+    tag: "نظرية الملكات",
+    title: "كيف نظرت 'نظرية الملكات' للعقل؟",
+    story: "تخيل العقل كخزانة مقسمة لأدراج؛ درج للذاكرة، ودرج للخيال، ودرج للإرادة.. هكذا تخيلوا العقل قديماً.",
+    content: "تقول هذه النظرية بأنه ما دام الجسم يتألف من أجزاء أو أعضاء وأطراف، فإن العقل أيضاً يتألف من عدد من (الملكات) أو القوى المنفصلة، مثل: الذاكرة، الإرادة، المعرفة، والانتباه.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-cubes"></i></div><div style="font-weight:900; color:var(--c-indigo)">العقل = مجموعة من الملكات (القدرات) المنفصلة</div>`,
+    quiz: { q: "حسب 'نظرية الملكات'، العقل يتكون من:", opts: ["عدد من الملكات والقوى المنفصلة (كالذاكرة والإرادة)", "عضلة واحدة متصلة بالقلب"], ans: 0, fb: "نعم، كانوا يقسمون العقل لقوى مستقلة." }
+  },
+  {
+    tag: "الهدف التربوي",
+    title: "تنمية وتقوية الملكات العقلية",
+    story: "كانوا يعذبون الطلاب بحفظ قصائد لا يفهمونها، ليس ليتعلموا الشعر، بل لـ 'تقوية عضلة الذاكرة' لديهم!",
+    content: "اعتقدوا أن أهم أغراض التربية هو (تنمية هذه الملكات)، وتقويتها عن طريق الاستعمال والتدريب. ولم تكن محتويات المنهج المدرسي توضع للاستفادة العملية منها، بل توضع فقط (لتدريب وتقوية ملكات العقل).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-hammer"></i></div><div style="font-weight:900; color:var(--c-indigo)">المنهج المدرسي = أداة لتقوية الملكات وليس للفهم العملي</div>`,
+    quiz: { q: "حسب هذه النظرية القديمة، لماذا كانت توضع المناهج المدرسية الصعبة؟", opts: ["لتدريب وتقوية ملكات العقل (كالذاكرة) وليس للاستفادة العملية", "للتسلية وتمضية الوقت"], ans: 0, fb: "بالضبط! كانوا يرون أن صعوبة المادة تدرب 'عضلة العقل'." }
+  },
+  {
+    tag: "تطبيقات تاريخية",
+    title: "تدريس اللغات القديمة كأداة تدريب",
+    story: "لماذا ندرس اللغة اللاتينية الميتة؟ الإجابة قديماً كانت: لأن صعوبتها تدرب عقلك ليصبح عبقرياً في الحاضر.",
+    content: "على أساس هذه النظرية، استمر تدريس اللغتين (اللاتينية واليونانية القديمة) في المدارس الأوروبية، ليس لاستخدامها في الحياة، بل لتدريب العقل بناءً على افتراض أن انتقال أثر التدريب يحدث دون أي شرط.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-book-journal-whills"></i></div><div style="font-weight:900; color:var(--c-indigo)">تدريس اللغات الميتة ⬅️ لتدريب العقل فقط</div>`,
+    quiz: { q: "كان مبرر تدريس اللغات القديمة (كاللاتينية) في المدارس الأوروبية هو:", opts: ["الاعتقاد بأنها تدرب العقل وتُسهل انتقال أثر التدريب للحياة", "لأن الجميع كان يتحدث بها يومياً في الشارع"], ans: 0, fb: "أحسنت! اعتقدوا أن صعوبتها تصقل العقل كالحديد." }
+  },
+  {
+    tag: "نقد النظرية",
+    title: "سقوط نظرية التدريب الشكلي",
+    story: "اكتشف العلماء متأخراً أن حفظك لألف بيت من الشعر، لن يجعلك أفضل في تذكر أين وضعت مفاتيح غرفتك!",
+    content: "هذا الافتراض كان (خطأً تربوياً) فادحاً؛ فليس هناك انتقال أثر للتعلم بمجرد التدريب العشوائي. وقد بدأ وليم جيمس تجاربه التي أثبتت أن 'التدريب الشكلي' المعتمد على نظرية الملكات العقلية قد فقد قيمته في التربية.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-ban"></i></div><div style="font-weight:900; color:var(--c-danger)">سقوط نظرية الملكات ❌ ⬅️ التدريب الأعمى لا ينقل الأثر</div>`,
+    quiz: { q: "ماذا أثبتت التجارب العلمية (كتجارب وليم جيمس) حول نظرية 'التدريب الشكلي'؟", opts: ["أثبتت أنها خطأ تربوي وفقدت قيمتها في تفسير انتقال أثر التعلم", "أثبتت أنها النظرية الوحيدة الصحيحة للتعلم"], ans: 0, fb: "صحيح! العقل ليس عضلة تتدرب بالمواد الصعبة غير المترابطة." }
+  },
+  {
+    tag: "النظرية الحديثة",
+    title: "2. نظرية العناصر المشتركة (ثورنديك)",
+    story: "تخيل أنك تلعب التنس ببراعة؛ سيكون من السهل عليك تعلم 'تنس الطاولة' لوجود تشابه كبير في الحركات والقوانين.",
+    content: "ظهرت نظرية جديدة لتفسير انتقال أثر التعلم وهي 'نظرية العناصر المشتركة'. يذهب 'ثورنديك' في تفسيره لعملية انتقال التعلم إلى أن الانتقال يصبح أكبر، ويحصل بقدر ما يكون هناك من (عناصر وعوامل تتوافر في الموقف السابق والموقف الحالي).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-puzzle-piece"></i></div><div style="font-weight:900; color:var(--c-indigo)">التشابه بين الموقفين = انتقال أسهل للتعلم</div>`,
+    quiz: { q: "وفقاً لثورنديك (نظرية العناصر المشتركة)، متى يكون انتقال أثر التعلم أكبر؟", opts: ["كلما كثرت العناصر والعوامل المشتركة بين الموقف السابق والموقف الجديد", "كلما اختلف الموقفان تماماً عن بعضهما"], ans: 0, fb: "نعم! التشابه يسهل نقل الخبرة." }
+  },
+  {
+    tag: "العناصر المشتركة",
+    title: "أين يكون التشابه والتصاحب؟",
+    story: "التشابه لا يكون في الشكل فقط، بل في المضمون، وفي طريقة التفكير، وحتى في المشاعر تجاه الموقف.",
+    content: "هذا 'التصاحب' أو الاشتراك قد يكون في: (المحتوى)، أو في (الطريقة)، أو في (الأهداف). فالتشابه في هذه الجوانب هو ما يسهل على المتعلم نقل خبراته السابقة لمواجهة المشكلة الجديدة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-layer-group"></i></div><div style="font-weight:900; color:var(--c-indigo)">التشابه في: المحتوى + الطريقة + الأهداف</div>`,
+    quiz: { q: "التصاحب (العناصر المشتركة) بين الموقفين قد يحدث في:", opts: ["المحتوى، أو الطريقة، أو الأهداف", "لون الغرفة فقط"], ans: 0, fb: "صحيح! أي تشابه جوهري يسهل انتقال الأثر." }
+  },
+  {
+    tag: "عبء التعلم",
+    title: "دور المعلم والمتعلم",
+    story: "التعلم لا يحدث بالسحر؛ يجب على المعلم أن يبني الجسر، وعلى الطالب أن يعبره بوعي.",
+    content: "إن هذا التفسير على بساطته يلقي عبئاً كبيراً على المتعلم والمعلم: (أ) دور المعلم: يجب أن يبرز العناصر والعوامل المتصاحبة أو المشتركة بين المواقف. (ب) دور المتعلم: أن يكتشف هذه العناصر ويميزها ليكتسب العادات.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-bridge"></i></div><div style="font-weight:900; color:var(--c-indigo)">المعلم يوضح التشابه ⬅️ المتعلم يكتشفه ويستفيد منه</div>`,
+    quiz: { q: "في نظرية العناصر المشتركة، ما هو دور المعلم؟", opts: ["أن يبرز ويوضح العناصر المتصاحبة (المشتركة) لتسهيل التعلم", "أن يخفي المعلومات عن الطالب ليزيد ذكاءه"], ans: 0, fb: "بالضبط! التوجيه وإبراز الروابط هو دور المعلم الناجح." }
+  },
+  {
+    tag: "تعريف النقل",
+    title: "ما هو انتقال أثر التعلم؟ (تعريف شامل)",
+    story: "كل معلومة تتعلمها هي مفتاح؛ 'انتقال الأثر' هو قدرتك على استخدام هذا المفتاح لفتح أبواب جديدة لم ترها من قبل.",
+    content: "يُعد 'انتقال أثر التعلم' هو استخدام تعلم سابق أو معلومات سابقة في أداء واجبات أو مهارات جديدة. فكلما كان الأداء الجديد أسهل، فإن النقل يُعد (إيجابياً)، وإذا كان الأداء ضعيفاً أو أُعيق، فإن النقل يُعد (سلبياً).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-truck-fast"></i></div><div style="font-weight:900; color:var(--c-indigo)">تعلم سابق ⬅️ (نقل) ⬅️ مهارة جديدة</div>`,
+    quiz: { q: "إذا ساعدك تعلمك السابق على أداء المهارة الجديدة بسهولة، فهذا يسمى:", opts: ["انتقال أثر تعلم (إيجابي)", "انتقال أثر تعلم (سلبي)"], ans: 0, fb: "نعم، التسهيل هو السمة الأساسية للانتقال الإيجابي." }
+  },
+  {
+    tag: "آليات النقل",
+    title: "آليتي انتقال أثر التعلم (العمودي والأفقي)",
+    story: "تارة تتقدم للأمام في نفس المستوى (نقل أفقي)، وتارة تصعد السلم لتعقيد أعلى (نقل عمودي).",
+    content: "هناك آليتان لانتقال أثر التعلم: 1. النقل العمودي. 2. النقل الأفقي. كلاهما يصف كيف تتحرك المهارة من موقف إلى آخر بناءً على مستوى الصعوبة والمجال.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div><div style="font-weight:900; color:var(--c-indigo)">النقل إما (أفقي) في نفس المستوى أو (عمودي) للتعقيد</div>`,
+    quiz: { q: "ما هما الآليتان الأساسيتان لانتقال أثر التعلم اللتان تم ذكرهما؟", opts: ["النقل العمودي والنقل الأفقي", "النقل السريع والنقل البطيء"], ans: 0, fb: "صحيح! هذه هي التقسيمات الهندسية لنقل المهارات." }
+  },
+  {
+    tag: "النقل العمودي",
+    title: "1. النقل العمودي (Vertical Transfer)",
+    story: "عندما تتقن جدول الضرب، تستخدمه لتعلم القسمة المطولة.. أنت تصعد من السهل إلى الصعب.",
+    content: "النقل العمودي: المقصود به هو انتقال أثر مهارة معينة إلى مهارة أخرى في نفس الفعالية أو اللعبة نفسها، ولكن الانتقال يكون (من السهل إلى الصعب). أي أن المهارة السابقة تُمهد لمهارة أعقد في نفس التخصص.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrow-up-right-dots"></i></div><div style="font-weight:900; color:var(--c-indigo)">في نفس المجال: من مستوى (سهل) ⬅️ إلى (صعب)</div>`,
+    quiz: { q: "النقل العمودي يتميز بأنه انتقال للمهارة:", opts: ["من مستوى سهل إلى مستوى صعب في نفس المجال", "من مجال لآخر بنفس الصعوبة"], ans: 0, fb: "أحسنت! البناء الرأسي يعني زيادة التعقيد." }
+  },
+  {
+    tag: "النقل الأفقي",
+    title: "2. النقل الأفقي (Horizontal Transfer)",
+    story: "تعلمت قيادة دراجة هوائية، فاستخدمت نفس مهارة التوازن لتعلم قيادة 'سكوتر'.. لقد نقلت المهارة أفقياً لشيء جديد كلياً.",
+    content: "النقل الأفقي: المقصود به انتقال أثر تعلم مهارة سبق أن تعلمها (في فعالية أو لعبة معينة) إلى مهارة جديدة في (فعالية أو لعبة أخرى مختلفة). هنا الصعوبة متقاربة لكن المجال مختلف.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></div><div style="font-weight:900; color:var(--c-indigo)">من مجال (أ) ⬅️ إلى مجال جديد (ب)</div>`,
+    quiz: { q: "انتقال أثر تعلم مهارة من (لعبة معينة) إلى مهارة جديدة في (لعبة أخرى) يسمى:", opts: ["نقلاً أفقياً", "نقلاً عمودياً"], ans: 0, fb: "بالضبط! لأنك تغير المجال أو اللعبة بالكامل." }
+  },
+  {
+    tag: "أنواع الانتقال",
+    title: "أنواع انتقال أثر التعلم (حسب النتيجة)",
+    story: "ليس كل انتقال خيراً؛ فبعض العادات القديمة كالأصفاد، تمنعنا من الركض في المضمار الجديد.",
+    content: "يُقسم انتقال أثر التعلم حسب (طبيعة تأثيره ونتيجته) إلى نوعين رئيسيين: أولاً: الانتقال الإيجابي. وثانياً: الانتقال السلبي. وهذا يحدد ما إذا كانت الخبرة القديمة (مُسَهّلة) أم (مُعيقة).",
+    visual: `<div class="v-icon"><i class="fa-solid fa-code-compare"></i></div><div style="font-weight:900; color:var(--c-indigo)">انتقال إيجابي (مُسَهّل) 🆚 انتقال سلبي (مُعيق)</div>`,
+    quiz: { q: "حسب (النتيجة والتأثير)، ينقسم انتقال أثر التعلم إلى:", opts: ["انتقال إيجابي وانتقال سلبي", "انتقال عمودي فقط"], ans: 0, fb: "صحيح! هذا التقسيم يركز على الفائدة أو الضرر." }
+  },
+  {
+    tag: "الانتقال الإيجابي",
+    title: "أولاً: الانتقال الإيجابي (Positive Transfer)",
+    story: "تعلمت التنس سابقاً؟ عظيم! ستجد أن تعلم الكرة الطائرة أسهل لك لأنك تمتلك ردة فعل سريعة وحركات مشتركة.",
+    content: "الانتقال الإيجابي: وهو ما يحدث حينما يؤدي التعلم السابق في عمل معين إلى 'تيسير وتسهيل' أداء عمل لاحق جديد. مثال ذلك: تعلم بعض الحركات في لعبة التنس يُسهم ويُسهل تعلم بعض الحركات في لعبة الكرة الطائرة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-plus-circle"></i></div><div style="font-weight:900; color:var(--c-success)">خبرة قديمة ➕ مهمة جديدة = تيسير وسهولة ✅</div>`,
+    quiz: { q: "ما هو الانتقال الإيجابي لأثر التعلم؟", opts: ["عندما ييسر ويُسهل التعلم السابق أداء مهارة جديدة لاحقة", "عندما يمنع التعلم السابق أداء المهارة الجديدة"], ans: 0, fb: "نعم، التيسير هو عنوان الانتقال الإيجابي." }
+  },
+  {
+    tag: "الانتقال السلبي",
+    title: "ثانياً: الانتقال السلبي (Negative Transfer)",
+    story: "تخيل أنك معتاد على قيادة سيارة في بلد القيادة فيه على اليمين، ثم سافرت لبلد القيادة فيه على اليسار؛ عادتك القديمة ستسبب لك حوادث!",
+    content: "الانتقال السلبي: ويحدث عندما تسهم المعلومات أو العادات القديمة المخزونة في 'إعاقة' تعلم مهارة جديدة. هنا الخبرة القديمة تتداخل بشكل ضار وتُربك الأداء الجديد.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-minus-circle"></i></div><div style="font-weight:900; color:var(--c-danger)">عادة قديمة ➖ مهمة جديدة = إعاقة وتشويش ❌</div>`,
+    quiz: { q: "متى نطلق على انتقال أثر التعلم بأنه 'سلبي'؟", opts: ["عندما تُعيق الخبرة القديمة تعلم المهارة الجديدة وتُربكه", "عندما تُسهل الخبرة القديمة تعلم المهارة الجديدة"], ans: 0, fb: "أحسنت! الإعاقة أو التعطيل هو جوهر الانتقال السلبي." }
+  },
+  {
+    tag: "مثال على السلبي",
+    title: "مثال رياضي للانتقال السلبي",
+    story: "قوانين كرة اليد تسمح بلمس الكرة باليد والمشي بها خطوات؛ إذا طبقت هذا في كرة السلة، سيحتسب الحكم خطأ فوراً!",
+    content: "مثال الانتقال السلبي: إتقان تعلم قوانين لعبة كرة اليد، وبعدها ينتقل اللاعب لتعلم قوانين لعبة كرة السلة. سوف 'يُعاق' في تعلم القوانين اللاحقة، حيث تظهر الأخطاء الواضحة (مثل مشي لاعب كرة اليد بالكرة) عندما يمارس لعبة السلة.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-basketball"></i></div><div style="font-weight:900; color:var(--c-danger)">قوانين اليد 🆚 قوانين السلة = تداخل وإعاقة للأداء</div>`,
+    quiz: { q: "لماذا يُعتبر انتقال لاعب (متقن لكرة اليد) لتعلم (قوانين كرة السلة) مثالاً للانتقال السلبي؟", opts: ["لأن قوانين كرة اليد ستتداخل وتُعيق وتُربك أداءه في كرة السلة وتسبب له أخطاء", "لأن الكرتين متشابهتان في الحجم فقط"], ans: 0, fb: "صحيح! التداخل في القواعد الحركية يسبب إعاقة واضحة." }
+  },
+  {
+    tag: "تطبيقات التعلم",
+    title: "لماذا تظهر الأخطاء في الانتقال السلبي؟",
+    story: "الجسد يحفظ الحركة ويستدعيها تلقائياً؛ العقل يطلب 'قواعد السلة'، لكن الجسد ينفذ 'قواعد اليد' رغماً عنه.",
+    content: "تظهر الأخطاء بوضوح في حالات الانتقال السلبي لأن العادات الحركية السابقة أصبحت 'مخزونة وشبه آلية'. عندما يتطلب الموقف الجديد استجابة مختلفة، يقفز السلوك الآلي القديم ليحل محل السلوك الجديد المطلوب، مما يسبب الخطأ.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-robot"></i></div><div style="font-weight:900; color:var(--c-indigo)">الاستجابة الآلية القديمة ⬅️ تقفز لتفسد الأداء الجديد</div>`,
+    quiz: { q: "سبب ظهور الأخطاء في الانتقال السلبي (كالمشي بالكرة في السلة) هو:", opts: ["أن العادات الحركية القديمة المخزونة تتدخل آلياً لتُعيق السلوك الجديد المطلوب", "أن اللاعب يكره لعبة كرة السلة"], ans: 0, fb: "بالضبط! الأوتوماتيكية في العادات القديمة هي سبب التداخل السلبي." }
+  },
+  {
+    tag: "خلاصة ثورنديك",
+    title: "الخلاصة: متى ننقل الأثر بذكاء؟",
+    story: "لكي تستفيد من تجاربك الماضية، ابحث دائماً عن 'العامل المشترك' بين الأمس واليوم، وتجنب 'التناقضات' التي توقعك في الفخ.",
+    content: "تلخيصاً لنظرية 'العناصر المشتركة' لثورنديك: إذا أردت انتقالاً إيجابياً، ابحث عن (التشابه) في الطريقة أو المحتوى أو الهدف. وإذا أردت تجنب الانتقال السلبي، فكن واعياً للاختلافات الجوهرية (كالقوانين المتضاربة) لتمنع التداخل المعيق.",
+    visual: `<div class="v-icon"><i class="fa-solid fa-object-group"></i></div><div style="font-weight:900; color:var(--c-indigo)">ابحث عن التشابه (للتيسير) + احذر التضارب (لمنع الإعاقة)</div>`,
+    quiz: { q: "لتحقيق 'انتقال إيجابي' لأثر التعلم بناءً على نظرية ثورنديك، يجب علينا:", opts: ["زيادة وإبراز العناصر المشتركة والمتشابهة بين الموقفين القديم والجديد", "إخفاء كل الخبرات السابقة وعدم تذكرها"], ans: 0, fb: "نعم! إبراز المشتركات هو مفتاح التسهيل." }
+  },
+  {
+    tag: "الخاتمة",
+    title: "مبارك! أكملت الدرس الثالث بنجاح",
+    story: "أنت الآن تدرك أن العقل ليس عضلة صماء تتدرب عشوائياً، بل شبكة من الروابط الذكية؛ ما تتعلمه اليوم، سيُمهد لك طريق الغد إن أحسنت استخدامه.",
+    content: "لقد استعرضنا بالتفصيل (نظرية انتقال أثر التعلم): بدأنا بسقوط نظرية 'التدريب الشكلي/الملكات'، وانتقلنا لنظرية 'العناصر المشتركة' لثورنديك. وتعرفنا على آليات النقل (العمودي والأفقي)، وأنواع الانتقال حسب النتيجة (الإيجابي المسهّل، والسلبي المعيق) مع الأمثلة التطبيقية الرياضية.",
+    visual: `<div class="v-icon" style="color:var(--c-accent)"><i class="fa-solid fa-trophy"></i></div><div style="font-weight:900; color:var(--c-indigo)">مرحى! لقد أتقنت آليات انتقال أثر التعلم باحترافية</div>`,
+    quiz: { q: "هل أنت مستعد الآن لتوظيف 'الانتقال الإيجابي' وتوجيه خبرات طلابك لخدمة المهارات الجديدة؟", opts: ["نعم، بكل تأكيد! سأبرز العناصر المشتركة لتسهيل التعلم", "لا، سأتركهم يتعلمون بالتخبط العشوائي"], ans: 0, fb: "رائع جداً! المعلم الذكي هو صانع الجسور بين المعارف. بالتوفيق!" }
+  }
+];
+
+// --- لۆژیکی سەرەکی بەرنامەکە (App Logic) ---
+let currentSlide = 0;
+let xp = 0;
+const total = SLIDE_DATA.length;
+const answered = new Set();
+
+function initApp() {
+  const container = document.getElementById('main-container');
+  SLIDE_DATA.forEach((slide, index) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'slide' + (index === 0 ? ' active' : '');
+    slideDiv.id = 'slide-' + index;
+    
+    slideDiv.innerHTML = `
+      <div class="card">
+        <div class="tag">${slide.tag}</div>
+        <h2 style="font-size: clamp(1.5rem, 4vw, 2.3rem); color: var(--c-navy); margin-bottom: 25px; font-weight: 900; line-height:1.2;">${slide.title}</h2>
+        
+        <div class="story-box">
+          <i class="fa-solid fa-quote-right"></i>
+          <p>${slide.story}</p>
+        </div>
+
+        <div class="content-body">
+          ${slide.content}
+        </div>
+
+        <div class="visual-box">
+          ${slide.visual}
+        </div>
+
+        <div class="activity-box" id="actBox-${index}">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+             <div style="width: 45px; height: 45px; background: var(--c-sky); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);">
+                <i class="fa-solid fa-bolt"></i>
+             </div>
+             <h3 style="font-weight: 900; color: var(--c-navy); margin:0; font-size: 1.4rem;">تحدي الاستيعاب</h3>
+          </div>
+          
+          <p style="margin-bottom: 20px; font-weight: 800; font-size: 1.2rem; color: var(--c-navy); line-height: 1.5;">${slide.quiz.q}</p>
+          
+          <div style="display: grid; gap: 12px;">
+            <button class="act-btn" onclick="checkAns(${index}, 0, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[0]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-0"></i>
+            </button>
+            <button class="act-btn" onclick="checkAns(${index}, 1, ${slide.quiz.ans}, this)">
+              <span>${slide.quiz.opts[1]}</span>
+              <i class="fa-regular fa-circle" id="icon-${index}-1"></i>
+            </button>
+          </div>
+          <div class="feedback-msg" id="fb-${index}"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(slideDiv);
+  });
+  updateUI();
+}
+
+function checkAns(sIdx, chosen, correct, btn) {
+  const box = document.getElementById(`actBox-${sIdx}`);
+  if (answered.has(sIdx)) return;
+  answered.add(sIdx);
+
+  const fb = document.getElementById(`fb-${sIdx}`);
+  const buttons = box.querySelectorAll('.act-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    btn.querySelector('i').className = "fa-solid fa-circle-check";
+    fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#dcfce7";
+    fb.style.color = "#166534";
+    fb.style.display = "block";
+    xp += 100;
+    showToast("+100 XP! إتقان مذهل");
+    
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#0284c7', '#4f46e5', '#10b981']
+    });
+  } else {
+    btn.classList.add('wrong');
+    btn.querySelector('i').className = "fa-solid fa-circle-xmark";
+    fb.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${SLIDE_DATA[sIdx].quiz.fb}`;
+    fb.style.backgroundColor = "#fee2e2";
+    fb.style.color = "#991b1b";
+    fb.style.display = "block";
+    buttons[correct].classList.add('correct');
+    buttons[correct].querySelector('i').className = "fa-solid fa-circle-check";
+  }
+  updateStats();
+}
+
+function move(dir) {
+  const slides = document.querySelectorAll('.slide');
+  if (currentSlide + dir < 0 || currentSlide + dir >= total) return;
+  
+  slides[currentSlide].classList.remove('active');
+  currentSlide += dir;
+  slides[currentSlide].classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('counter').innerText = `${currentSlide + 1} / ${total}`;
+  document.getElementById('progress-bar').style.width = ((currentSlide + 1) / total * 100) + '%';
+  document.getElementById('btn-prev').disabled = currentSlide === 0;
+  document.getElementById('btn-next').disabled = currentSlide === total - 1;
+}
+
+function updateStats() {
+  document.getElementById('scoreDisplay').innerText = xp;
+  let level = "مستكشف";
+  if (xp >= 500) level = "باحث تربوي";
+  if (xp >= 1000) level = "أخصائي نفسي";
+  if (xp >= 1500) level = "بروفيسور";
+  if (xp >= 1900) level = "أسطورة التعلم";
+  document.getElementById('levelDisplay').innerText = level;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = "block";
+  t.style.animation = "fadeInOut 2.5s forwards";
+  setTimeout(() => { t.style.display = "none"; }, 2500);
+}
+
+window.onload = initApp;
+</script>
+
+</body>
+</html>
